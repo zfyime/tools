@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
@@ -6,6 +7,12 @@ import { LanguageProvider } from '@/context/LanguageContext';
 
 // 阻止Font Awesome自动插入CSS，避免闪烁
 config.autoAddCss = false;
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
   title: {
@@ -34,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN">
+    <html lang="zh-CN" className={inter.variable}>
       <head>
         {/* 在首屏渲染前设置主题，避免主题闪烁 */}
         <script

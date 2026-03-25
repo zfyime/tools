@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLanguage } from '@fortawesome/free-solid-svg-icons';
 import { useLanguage } from '@/context/LanguageContext';
@@ -9,6 +9,19 @@ import { Language } from '@/config/i18n';
 export default function LanguageToggle() {
   const { language, changeLanguage, t } = useLanguage();
   const [showDropdown, setShowDropdown] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // 点击外部关闭下拉菜单
+  useEffect(() => {
+    if (!showDropdown) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [showDropdown]);
   
   // 切换下拉菜单显示状态
   const toggleDropdown = () => {
@@ -22,7 +35,7 @@ export default function LanguageToggle() {
   };
   
   return (
-    <div className="relative">
+    <div className="relative" ref={containerRef}>
       <button
         className="btn-secondary w-10 h-10 rounded-full flex items-center justify-center group relative"
         onClick={toggleDropdown}
@@ -45,7 +58,7 @@ export default function LanguageToggle() {
       {/* 语言选择下拉菜单 */}
       {showDropdown && (
         <div 
-          className="absolute right-0 top-full mt-2 py-2 w-32 bg-[rgb(var(--color-bg-card))] shadow-lg rounded-lg border border-[rgba(var(--color-primary),0.2)] z-50"
+          className="absolute right-0 top-full mt-2 py-2 w-32 bg-[rgb(var(--color-bg-card))] shadow-sm rounded-lg border border-[rgba(var(--color-primary),0.2)] z-50"
           style={{
             backgroundColor: 'rgb(var(--color-bg-card))',
             border: '1px solid rgba(var(--color-primary), 0.2)'

@@ -80,6 +80,7 @@
 body {
   color: rgb(var(--color-text-primary));
   background: rgb(var(--color-bg-main));
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
   min-height: 100vh;
   transition: color 0.3s ease, background-color 0.3s ease;
 }
@@ -171,16 +172,19 @@ body {
 @layer components {
   /* 卡片基础样式 */
   .card {
-    @apply rounded-xl border transition-colors duration-200;
+    @apply rounded-xl border duration-200;
     background-color: rgb(var(--color-bg-card));
     border-color: var(--color-border);
     box-shadow: 0 1px 3px var(--color-shadow);
+    transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s;
   }
-  
+
   /* 卡片悬停效果 */
   .card:hover {
     background-color: rgb(var(--color-bg-secondary));
-    border-color: rgba(161, 161, 170, 0.4);
+    border-color: rgba(var(--color-text-tertiary), 0.4);
+    box-shadow: 0 0 0 1px rgba(var(--color-text-tertiary), 0.15), 0 4px 12px var(--color-shadow);
+    transform: translateY(-2px);
   }
   
   /* 主按钮样式 */
@@ -231,8 +235,7 @@ body {
   
   /* 导航栏样式 */
   .nav-bar {
-    @apply backdrop-blur-md border p-2 rounded-xl shadow-sm;
-    background-color: rgba(var(--color-bg-card), 0.6);
+    @apply border-b pb-4;
     border-color: var(--color-border);
   }
   
@@ -387,14 +390,14 @@ body {
 }
 
 .prose blockquote {
-  border-left: 4px solid #6366F1;
+  border-left: 4px solid rgb(var(--color-text-tertiary));
   padding-left: 1em;
   margin-left: 0;
-  color: #CBD5E1;
+  color: rgb(var(--color-text-secondary));
 }
 
 .prose code {
-  background-color: rgba(99, 102, 241, 0.1);
+  background-color: rgb(var(--color-bg-secondary));
   padding: 0.2em 0.4em;
   border-radius: 3px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -402,7 +405,7 @@ body {
 }
 
 .prose pre {
-  background-color: #2D3748;
+  background-color: rgb(var(--color-block));
   padding: 1em;
   border-radius: 6px;
   overflow-x: auto;
@@ -413,7 +416,7 @@ body {
   background-color: transparent;
   padding: 0;
   font-size: 0.9em;
-  color: #CBD5E1;
+  color: rgb(var(--color-text-secondary));
 }
 
 .prose table {
@@ -423,19 +426,19 @@ body {
 }
 
 .prose th, .prose td {
-  border: 1px solid #4B5563;
+  border: 1px solid var(--color-border);
   padding: 0.5em 0.75em;
   text-align: left;
 }
 
 .prose th {
-  background-color: #2D3748;
+  background-color: rgb(var(--color-block));
   font-weight: 600;
 }
 
 .prose hr {
   border: 0;
-  border-top: 1px solid #4B5563;
+  border-top: 1px solid var(--color-border);
   margin: 2em 0;
 }
 
@@ -446,7 +449,7 @@ body {
 }
 
 .prose-invert {
-  color: #F1F5F9;
+  color: rgb(var(--color-text-primary));
 }
 
 /* 改进Markdown预览样式隔离 */
@@ -462,7 +465,7 @@ body {
 }
 
 .markdown-preview-container a {
-  color: #818CF8;
+  color: rgb(var(--color-primary-light));
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -489,12 +492,12 @@ body {
 
 .markdown-preview-container th,
 .markdown-preview-container td {
-  border: 1px solid #4B5563;
+  border: 1px solid var(--color-border);
   padding: 0.5em;
 }
 
 .markdown-preview-container th {
-  background-color: #2D3748;
+  background-color: rgb(var(--color-block));
 }
 
 .markdown-preview-container iframe,
@@ -507,8 +510,8 @@ body {
 .markdown-preview-container blockquote {
   margin-left: 0;
   padding-left: 1em;
-  border-left: 4px solid #6366F1;
-  color: #CBD5E1;
+  border-left: 4px solid rgb(var(--color-text-tertiary));
+  color: rgb(var(--color-text-secondary));
 }
 
 /* 限制预览区域的内容交互 */

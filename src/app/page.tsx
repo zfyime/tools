@@ -501,95 +501,26 @@ export default function Home() {
       )}
 
       {/* 头部 */}
-      <header className="sticky top-0 z-10 backdrop-blur-md border-b border-[rgba(var(--color-primary),0.1)] bg-[rgba(var(--color-bg-secondary),0.8)]">
-        <div className="container mx-auto px-4 py-3 flex flex-col md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-[rgb(var(--color-primary))]">
-                {t('common.siteName')}
-              </h1>
-              <span className="mx-2 text-sm text-[rgb(var(--color-text-secondary))]">|</span>
-              <p className="text-sm text-[rgb(var(--color-text-secondary))]">{t('common.siteDesc')}</p>
-            </div>
-            
-            <div className="flex items-center space-x-2 md:hidden">
-              <button 
-                className="btn-primary w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center"
-                onClick={viewFavorites}
-                title={t('common.favorites')}
-              >
-                <FontAwesomeIcon icon={faStar} className="text-sm md:text-base" />
-              </button>
-              
-              <div className="w-px h-6 bg-[rgba(var(--color-text-secondary),0.2)]"></div>
-              
-              <LanguageToggle />
-              <ThemeToggle />
-              
-              {language === 'zh' && (
-                <>
-                  <div className="w-px h-6 bg-[rgba(var(--color-text-secondary),0.2)]"></div>
-                  
-                  <div className="relative">
-                    <button
-                      className="btn-secondary w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center relative"
-                      onClick={toggleProductsDropdown}
-                      title={t('common.productRecommend')}
-                    >
-                      <FontAwesomeIcon icon={faExternalLinkAlt} className="text-sm md:text-base" />
-                      <FontAwesomeIcon icon={faChevronDown} className="absolute text-[0.5rem] md:text-[0.6rem] bottom-0.5 md:bottom-1 right-0.5 md:right-1" />
-                    </button>
-                  </div>
-                </>
-              )}
-              
-              <a 
-                href="https://github.com/star7th/jisuxiang"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-secondary w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center"
-                title="GitHub"
-              >
-                <FontAwesomeIcon icon={faGithub} className="text-sm md:text-base" />
-              </a>
-            </div>
+      <header className="sticky top-0 z-10 backdrop-blur-md border-b border-[rgba(var(--color-primary),0.1)] bg-[rgba(var(--color-bg-main),0.8)]">
+        <div className="container mx-auto px-4 py-3 flex flex-wrap items-center gap-3">
+          {/* 左侧：标题 */}
+          <div className="flex items-center">
+            <h1 className="text-2xl font-bold text-[rgb(var(--color-primary))]">
+              {t('common.siteName')}
+            </h1>
+            <span className="mx-2 text-sm text-[rgb(var(--color-text-secondary))] hidden sm:inline">|</span>
+            <p className="text-sm text-[rgb(var(--color-text-secondary))] hidden sm:block">{t('common.siteDesc')}</p>
           </div>
-          
-          <div className="mt-3 md:mt-0 relative w-full md:w-auto flex-1 md:max-w-md">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder={t('common.search')}
-                className="w-full bg-[rgb(var(--color-bg-card))] rounded-full pl-10 pr-4 py-2 text-[rgb(var(--color-text-primary))] outline-none focus:ring-2 ring-[rgb(var(--color-primary))] transition-shadow shadow-sm"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <FontAwesomeIcon 
-                icon={faSearch} 
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[rgb(var(--color-text-secondary))]" 
-              />
-              {searchTerm && (
-                <button 
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
-                  onClick={() => setSearchTerm('')}
-                >
-                  <FontAwesomeIcon 
-                    icon={faTimes} 
-                    className="text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))] transition-colors" 
-                  />
-                </button>
-              )}
-            </div>
-          </div>
-          
-          <div className="hidden md:flex items-center space-x-3">
-            <button 
-              className="btn-primary w-10 h-10 rounded-full flex items-center justify-center group relative"
+
+          {/* 右侧：按钮组 */}
+          <div className="flex items-center space-x-2 md:space-x-3 ml-auto order-1 md:order-2">
+            <button
+              className="btn-secondary w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center group relative"
               onClick={viewFavorites}
               title={t('common.favorites')}
             >
-              <FontAwesomeIcon icon={faStar} />
-              <span className="absolute left-1/2 -translate-x-1/2 top-full mt-2 px-2 py-1 rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 text-sm z-10"
+              <FontAwesomeIcon icon={faStar} className="text-sm md:text-base" />
+              <span className="hidden md:block absolute left-1/2 -translate-x-1/2 top-full mt-2 px-2 py-1 rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 text-sm z-10"
                 style={{
                   backgroundColor: 'rgb(var(--color-bg-secondary))',
                   color: 'rgb(var(--color-text-primary))'
@@ -597,24 +528,23 @@ export default function Home() {
                 {t('common.favorites')}
               </span>
             </button>
-            
+
             <div className="w-px h-6 bg-[rgba(var(--color-text-secondary),0.2)]"></div>
-            
+
             <LanguageToggle />
             <ThemeToggle />
-            
+
             <div className="w-px h-6 bg-[rgba(var(--color-text-secondary),0.2)]"></div>
-            
-            {/* GitHub链接按钮 */}
-            <a 
+
+            <a
               href="https://github.com/star7th/jisuxiang"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-secondary w-10 h-10 rounded-full flex items-center justify-center group relative"
+              className="btn-secondary w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center group relative"
               title="GitHub"
             >
-              <FontAwesomeIcon icon={faGithub} />
-              <span className="absolute left-1/2 -translate-x-1/2 top-full mt-2 px-2 py-1 rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 text-sm z-10"
+              <FontAwesomeIcon icon={faGithub} className="text-sm md:text-base" />
+              <span className="hidden md:block absolute left-1/2 -translate-x-1/2 top-full mt-2 px-2 py-1 rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 text-sm z-10"
                 style={{
                   backgroundColor: 'rgb(var(--color-bg-secondary))',
                   color: 'rgb(var(--color-text-primary))'
@@ -622,18 +552,17 @@ export default function Home() {
                 GitHub
               </span>
             </a>
-            
-            {/* 产品推荐下拉菜单 - 仅在中文语言下显示 */}
+
             {language === 'zh' && (
               <div id="products-dropdown-container" className="relative">
                 <button
-                  className="btn-secondary w-10 h-10 rounded-full flex items-center justify-center group relative"
+                  className="btn-secondary w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center group relative"
                   onClick={toggleProductsDropdown}
                   title={t('common.productRecommend')}
                 >
-                  <FontAwesomeIcon icon={faExternalLinkAlt} />
-                  <FontAwesomeIcon icon={faChevronDown} className={`absolute text-[0.6rem] bottom-1 right-1 transition-transform duration-200 ${showProductsDropdown ? 'rotate-180' : ''}`} />
-                  <span className="absolute left-1/2 -translate-x-1/2 top-full mt-2 px-2 py-1 rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 text-sm z-10"
+                  <FontAwesomeIcon icon={faExternalLinkAlt} className="text-sm md:text-base" />
+                  <FontAwesomeIcon icon={faChevronDown} className={`absolute text-[0.5rem] md:text-[0.6rem] bottom-0.5 md:bottom-1 right-0.5 md:right-1 transition-transform duration-200 ${showProductsDropdown ? 'rotate-180' : ''}`} />
+                  <span className="hidden md:block absolute left-1/2 -translate-x-1/2 top-full mt-2 px-2 py-1 rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 text-sm z-10"
                     style={{
                       backgroundColor: 'rgb(var(--color-bg-secondary))',
                       color: 'rgb(var(--color-text-primary))'
@@ -641,7 +570,7 @@ export default function Home() {
                     {t('common.productRecommend')}
                   </span>
                 </button>
-                
+
                 {showProductsDropdown && (
                   <div className="absolute right-0 top-full mt-1 w-56 rounded-md shadow-lg border z-50 animate-fadeIn overflow-hidden"
                       style={{
@@ -650,7 +579,7 @@ export default function Home() {
                       }}>
                     <div className="py-1">
                       {recommendedProducts.map((product, index) => (
-                        <a 
+                        <a
                           key={index}
                           href={product.url}
                           target="_blank"
@@ -674,6 +603,34 @@ export default function Home() {
                 )}
               </div>
             )}
+          </div>
+
+          {/* 中间：搜索框 - 移动端全宽，桌面端居中 */}
+          <div className="w-full md:flex-1 md:max-w-md md:mx-4 order-2 md:order-1">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder={t('common.search')}
+                className="w-full bg-transparent border border-[rgba(var(--color-primary),0.2)] rounded-full pl-10 pr-4 py-2 text-[rgb(var(--color-text-primary))] outline-none focus:border-[rgb(var(--color-primary))] transition-colors"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <FontAwesomeIcon
+                icon={faSearch}
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[rgb(var(--color-text-secondary))]"
+              />
+              {searchTerm && (
+                <button
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                  onClick={() => setSearchTerm('')}
+                >
+                  <FontAwesomeIcon
+                    icon={faTimes}
+                    className="text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))] transition-colors"
+                  />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </header>
