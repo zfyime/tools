@@ -51,8 +51,8 @@
   --color-primary-light: 113, 113, 122; /* #71717A */
   
   /* 背景色系 */
-  --color-bg-main: 255, 255, 255; /* #FFFFFF - 纯白背景 */
-  --color-bg-card: 255, 255, 255; /* #FFFFFF */
+  --color-bg-main: 250, 250, 250; /* #FAFAFA - 极浅灰背景，提升呼吸感 */
+  --color-bg-card: 255, 255, 255; /* #FFFFFF - 卡片纯白，自然浮现 */
   --color-bg-secondary: 244, 244, 245; /* #F4F4F5 */
   
   /* 文字颜色 */
@@ -175,31 +175,33 @@ body {
     @apply rounded-xl border duration-200;
     background-color: rgb(var(--color-bg-card));
     border-color: var(--color-border);
-    box-shadow: 0 1px 3px var(--color-shadow);
-    transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    box-shadow: 0 1px 2px var(--color-shadow);
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
 
-  /* 卡片悬停效果 */
+  /* 卡片悬停效果 - 保持克制，仅加深边框和阴影，不使用 translateY 和背景色突变 */
   .card:hover {
-    background-color: rgb(var(--color-bg-secondary));
-    border-color: rgba(var(--color-text-tertiary), 0.4);
-    box-shadow: 0 0 0 1px rgba(var(--color-text-tertiary), 0.15), 0 4px 12px var(--color-shadow);
-    transform: translateY(-2px);
+    border-color: rgba(var(--color-text-tertiary), 0.3);
+    box-shadow: 0 4px 12px var(--color-shadow);
   }
   
   /* 主按钮样式 */
   .btn-primary {
-    @apply rounded-md px-4 py-2 text-sm font-medium transition-colors shadow-sm;
+    @apply rounded-md px-4 py-2 text-sm font-medium transition-all shadow-sm active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2;
     background-color: rgb(var(--color-primary));
     color: rgb(var(--color-bg-main));
+    --tw-ring-color: rgba(var(--color-primary), 0.5);
+    --tw-ring-offset-color: rgb(var(--color-bg-main));
   }
   
   /* 次按钮样式 */
   .btn-secondary {
-    @apply rounded-md px-4 py-2 text-sm font-medium transition-colors border shadow-sm;
+    @apply rounded-md px-4 py-2 text-sm font-medium transition-all border shadow-sm active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2;
     background-color: transparent;
     color: rgb(var(--color-text-primary));
     border-color: var(--color-border);
+    --tw-ring-color: rgba(var(--color-text-primary), 0.2);
+    --tw-ring-offset-color: rgb(var(--color-bg-main));
   }
   
   /* 按钮悬停效果 */
@@ -214,7 +216,7 @@ body {
   
   /* 分类标签样式 */
   .category-tag {
-    @apply px-2.5 py-0.5 text-xs rounded-full inline-flex items-center border font-medium;
+    @apply px-2.5 py-0.5 text-xs rounded-full inline-flex items-center border font-medium transition-colors cursor-pointer hover:bg-[rgb(var(--color-border))] active:scale-[0.96];
     background-color: rgb(var(--color-bg-secondary));
     color: rgb(var(--color-text-secondary));
     border-color: var(--color-border);
@@ -222,7 +224,7 @@ body {
   
   /* 搜索框样式 */
   .search-input {
-    @apply w-full px-4 py-2.5 pl-10 text-sm focus:outline-none focus:ring-1 rounded-md transition-colors shadow-sm;
+    @apply w-full px-4 py-2.5 pl-10 text-sm focus:outline-none focus:ring-2 focus:ring-offset-1 rounded-md transition-all shadow-sm;
     background-color: transparent;
     color: rgb(var(--color-text-primary));
     border: 1px solid var(--color-border);
@@ -230,7 +232,8 @@ body {
   
   .search-input:focus {
     border-color: rgb(var(--color-text-primary));
-    --tw-ring-color: rgb(var(--color-text-primary));
+    --tw-ring-color: rgba(var(--color-text-primary), 0.2);
+    --tw-ring-offset-color: rgb(var(--color-bg-main));
   }
   
   /* 导航栏样式 */
