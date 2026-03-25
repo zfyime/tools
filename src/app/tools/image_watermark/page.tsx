@@ -692,7 +692,7 @@ export default function ImageWatermark() {
                           type="button"
                           className={`p-2 rounded text-sm cursor-pointer transition-all duration-200 ${
                             position === pos 
-                              ? 'bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-hover))] text-white shadow-md' 
+                              ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-bg-main))] shadow-sm border border-[var(--color-border)]' 
                               : 'bg-block border border-purple-glow/20 hover:border-primary/50 hover:bg-primary/10'
                           }`}
                           onClick={() => setPosition(pos as WatermarkPosition)}
@@ -706,7 +706,7 @@ export default function ImageWatermark() {
                         type="button"
                         className={`p-2 w-full rounded text-sm cursor-pointer transition-all duration-200 ${
                           position === 'tile' 
-                            ? 'bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-hover))] text-white shadow-md' 
+                            ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-bg-main))] shadow-sm border border-[var(--color-border)]' 
                             : 'bg-block border border-purple-glow/20 hover:border-primary/50 hover:bg-primary/10'
                         }`}
                         onClick={() => setPosition(position === 'tile' ? 'bottom-right' : 'tile')}
@@ -779,7 +779,7 @@ export default function ImageWatermark() {
                           type="button"
                           className={`p-2 rounded text-sm cursor-pointer transition-all duration-200 ${
                             protectionLevel === level 
-                              ? 'bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-hover))] text-white shadow-md' 
+                              ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-bg-main))] shadow-sm border border-[var(--color-border)]' 
                               : 'bg-block border border-purple-glow/20 hover:border-primary/50 hover:bg-primary/10'
                           }`}
                           onClick={() => {

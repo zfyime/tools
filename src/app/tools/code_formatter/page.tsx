@@ -24,7 +24,7 @@ const _styles = {
   actionBtnPrimary: "btn-primary flex items-center gap-2",
   loading: "text-purple animate-pulse",
   tabButton: "px-3 py-2 text-sm font-medium rounded-md transition-all",
-  tabButtonActive: "bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-hover))] text-white shadow-sm",
+  tabButtonActive: "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-bg-main))] shadow-sm border border-[var(--color-border)]",
   tabButtonInactive: "btn-secondary",
   tabContainer: "flex items-center rounded-md p-1 bg-block-strong",
   flexBetween: "flex flex-col sm:flex-row gap-4 justify-between items-center",

@@ -13,68 +13,67 @@
 }
 
 :root {
-  /* 主题色 */
-  --color-primary: 99, 102, 241; /* #6366F1 - 深邃紫色 */
-  --color-primary-hover: 139, 92, 246; /* #8B5CF6 - 紫罗兰 */
-  --color-primary-light: 129, 140, 248; /* #818CF8 - 亮紫色 */
+  /* Shadcn UI Dark Mode Base */
+  --color-primary: 250, 250, 250; /* #FAFAFA */
+  --color-primary-hover: 228, 228, 231; /* #E4E4E7 */
+  --color-primary-light: 161, 161, 170; /* #A1A1AA */
   
   /* 背景色系 */
-  --color-bg-main: 18, 24, 39; /* #121827 - 深炭黑 */
-  --color-bg-card: 30, 41, 59; /* #1E293B - 暗灰蓝 */
-  --color-bg-secondary: 45, 55, 72; /* #2D3748 - 深靛蓝 */
+  --color-bg-main: 9, 9, 11; /* #09090B - 极黑背景 */
+  --color-bg-card: 9, 9, 11; /* #09090B - 卡片同色，靠边框区分 */
+  --color-bg-secondary: 39, 39, 42; /* #27272A - 次级背景/悬停 */
   
   /* 文字颜色 */
-  --color-text-primary: 241, 245, 249; /* #F1F5F9 - 银月白 */
-  --color-text-secondary: 203, 213, 225; /* #CBD5E1 - 淡灰蓝 */
-  --color-text-tertiary: 148, 163, 184; /* #94A3B8 - 冷钢灰 */
+  --color-text-primary: 250, 250, 250; /* #FAFAFA */
+  --color-text-secondary: 161, 161, 170; /* #A1A1AA */
+  --color-text-tertiary: 113, 113, 122; /* #71717A */
   
   /* 点缀色 */
-  --color-success: 16, 185, 129; /* #10B981 - 暗翠绿 */
-  --color-warning: 245, 158, 11; /* #F59E0B - 暗琥珀 */
-  --color-error: 239, 68, 68; /* #EF4444 - 暗珊瑚 */
+  --color-success: 34, 197, 94;
+  --color-warning: 245, 158, 11;
+  --color-error: 239, 68, 68;
   
   /* 块级元素背景色 */
-  --color-block: 38, 53, 72; /* #263548 - 深灰蓝色块 */
-  --color-block-strong: 45, 55, 72; /* #2D3748 - 更深的块色 */
-  --color-block-hover: 61, 74, 92; /* #3D4A5C - 悬停态块色 */
+  --color-block: 24, 24, 27; /* #18181B */
+  --color-block-strong: 39, 39, 42;
+  --color-block-hover: 63, 63, 70;
   
   /* 边框和阴影 */
-  --color-border: rgba(99, 102, 241, 0.15);
-  --color-shadow: rgba(0, 0, 0, 0.25);
-  --purple-glow: rgba(99, 102, 241, 0.15);
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-shadow: rgba(0, 0, 0, 0.5);
+  --purple-glow: transparent;
 }
 
-/* 浅色主题变量 */
+/* 浅色主题变量 (Shadcn UI Light Mode) */
 [data-theme='light'] {
-  /* 主题色保持不变，以保持品牌一致性 */
-  --color-primary: 99, 102, 241; /* #6366F1 - 深邃紫色 */
-  --color-primary-hover: 139, 92, 246; /* #8B5CF6 - 紫罗兰 */
-  --color-primary-light: 124, 58, 237; /* #7C3AED - 更深的紫色，提高对比度 */
+  --color-primary: 24, 24, 27; /* #18181B - 主色变黑 */
+  --color-primary-hover: 39, 39, 42; /* #27272A */
+  --color-primary-light: 113, 113, 122; /* #71717A */
   
   /* 背景色系 */
-  --color-bg-main: 249, 250, 251; /* #F9FAFB - 浅灰背景 */
-  --color-bg-card: 255, 255, 255; /* #FFFFFF - 纯白卡片 */
-  --color-bg-secondary: 243, 244, 246; /* #F3F4F6 - 次级灰背景 */
+  --color-bg-main: 255, 255, 255; /* #FFFFFF - 纯白背景 */
+  --color-bg-card: 255, 255, 255; /* #FFFFFF */
+  --color-bg-secondary: 244, 244, 245; /* #F4F4F5 */
   
   /* 文字颜色 */
-  --color-text-primary: 17, 24, 39; /* #111827 - 近黑色 */
-  --color-text-secondary: 55, 65, 81; /* #374151 - 深灰色 */
-  --color-text-tertiary: 107, 114, 128; /* #6B7280 - 中灰色 */
+  --color-text-primary: 9, 9, 11; /* #09090B */
+  --color-text-secondary: 113, 113, 122; /* #71717A */
+  --color-text-tertiary: 161, 161, 170; /* #A1A1AA */
   
-  /* 点缀色保持不变 */
-  --color-success: 16, 185, 129; /* #10B981 - 暗翠绿 */
-  --color-warning: 245, 158, 11; /* #F59E0B - 暗琥珀 */
-  --color-error: 239, 68, 68; /* #EF4444 - 暗珊瑚 */
+  /* 点缀色 */
+  --color-success: 34, 197, 94;
+  --color-warning: 245, 158, 11;
+  --color-error: 239, 68, 68;
   
   /* 块级元素背景色 */
-  --color-block: 241, 245, 249; /* #F1F5F9 - 浅灰色块 */
-  --color-block-strong: 226, 232, 240; /* #E2E8F0 - 更强调的块色 */
-  --color-block-hover: 203, 213, 225; /* #CBD5E1 - 悬停态块色 */
+  --color-block: 244, 244, 245; /* #F4F4F5 */
+  --color-block-strong: 228, 228, 231; /* #E4E4E7 */
+  --color-block-hover: 212, 212, 216; /* #D4D4D8 */
   
   /* 边框和阴影 */
-  --color-border: rgba(99, 102, 241, 0.2);
-  --color-shadow: rgba(0, 0, 0, 0.1);
-  --purple-glow: rgba(99, 102, 241, 0.2);
+  --color-border: rgba(9, 9, 11, 0.1);
+  --color-shadow: rgba(0, 0, 0, 0.05);
+  --purple-glow: transparent;
 }
 
 /* 全局样式 */
@@ -96,18 +95,18 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(var(--color-primary), 0.4);
+  background: rgba(var(--color-text-tertiary), 0.4);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(var(--color-primary-hover), 0.6);
+  background: rgba(var(--color-text-secondary), 0.6);
 }
 
 /* Firefox滚动条样式 */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(var(--color-primary), 0.4) rgba(var(--color-bg-secondary), 0.3);
+  scrollbar-color: rgba(var(--color-text-tertiary), 0.4) rgba(var(--color-bg-secondary), 0.3);
 }
 
 /* 主题通用文本颜色类 */
@@ -172,103 +171,102 @@ body {
 @layer components {
   /* 卡片基础样式 */
   .card {
-    @apply rounded-lg border shadow-lg transition-all duration-300;
+    @apply rounded-xl border transition-colors duration-200;
     background-color: rgb(var(--color-bg-card));
-    border-color: rgba(var(--color-primary), 0.15);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-color: var(--color-border);
+    box-shadow: 0 1px 3px var(--color-shadow);
   }
   
   /* 卡片悬停效果 */
   .card:hover {
-    border-color: rgba(var(--color-primary), 0.3);
-    background-color: color-mix(in srgb, rgb(var(--color-bg-card)) 95%, rgb(var(--color-primary)) 5%);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
+    background-color: rgb(var(--color-bg-secondary));
+    border-color: rgba(161, 161, 170, 0.4);
   }
   
   /* 主按钮样式 */
   .btn-primary {
-    @apply bg-gradient-to-r text-white rounded-md px-4 py-2 font-medium transition-all;
-    background-image: linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-primary-hover)));
+    @apply rounded-md px-4 py-2 text-sm font-medium transition-colors shadow-sm;
+    background-color: rgb(var(--color-primary));
+    color: rgb(var(--color-bg-main));
   }
   
   /* 次按钮样式 */
   .btn-secondary {
-    @apply rounded-md px-4 py-2 font-medium transition-all border;
-    background-color: rgb(var(--color-bg-secondary));
-    color: rgb(var(--color-primary-light));
-    border-color: rgb(var(--color-primary));
+    @apply rounded-md px-4 py-2 text-sm font-medium transition-colors border shadow-sm;
+    background-color: transparent;
+    color: rgb(var(--color-text-primary));
+    border-color: var(--color-border);
   }
   
   /* 按钮悬停效果 */
-  .btn-primary:hover, .btn-secondary:hover {
-    @apply shadow-md scale-[1.02];
-    box-shadow: 0 4px 6px rgba(var(--color-primary), 0.25);
-    border-color: rgb(var(--color-primary-light));
+  .btn-primary:hover {
+    background-color: rgb(var(--color-primary-hover));
+  }
+  
+  .btn-secondary:hover {
+    background-color: rgb(var(--color-bg-secondary));
+    color: rgb(var(--color-text-primary));
   }
   
   /* 分类标签样式 */
   .category-tag {
-    @apply px-2 py-1 text-xs rounded-full inline-block border;
-    background-color: rgba(var(--color-primary), 0.15);
-    color: rgb(var(--color-primary-light));
-    border-color: rgba(var(--color-primary), 0.2);
+    @apply px-2.5 py-0.5 text-xs rounded-full inline-flex items-center border font-medium;
+    background-color: rgb(var(--color-bg-secondary));
+    color: rgb(var(--color-text-secondary));
+    border-color: var(--color-border);
   }
   
   /* 搜索框样式 */
   .search-input {
-    @apply w-full px-4 py-2.5 pl-10 text-sm focus:outline-none focus:ring-1 rounded-md shadow-sm transition-all;
-    background-color: rgb(var(--color-bg-secondary));
+    @apply w-full px-4 py-2.5 pl-10 text-sm focus:outline-none focus:ring-1 rounded-md transition-colors shadow-sm;
+    background-color: transparent;
     color: rgb(var(--color-text-primary));
-    border: 1px solid rgba(var(--color-primary), 0.2);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--color-border);
   }
   
   .search-input:focus {
-    border-color: rgb(var(--color-primary));
-    --tw-ring-color: rgb(var(--color-primary));
+    border-color: rgb(var(--color-text-primary));
+    --tw-ring-color: rgb(var(--color-text-primary));
   }
   
   /* 导航栏样式 */
   .nav-bar {
-    @apply backdrop-blur-md border-b p-4 rounded-lg;
-    background-color: rgba(var(--color-bg-secondary), 0.7);
-    border-color: rgba(var(--color-primary), 0.2);
+    @apply backdrop-blur-md border p-2 rounded-xl shadow-sm;
+    background-color: rgba(var(--color-bg-card), 0.6);
+    border-color: var(--color-border);
   }
   
   /* 图标容器 */
   .icon-container {
-    @apply w-10 h-10 rounded-lg flex items-center justify-center;
-    background-color: rgba(var(--color-primary), 0.1);
+    @apply w-10 h-10 rounded-lg flex items-center justify-center border shadow-sm;
+    background-color: rgb(var(--color-bg-main));
+    border-color: var(--color-border);
   }
   
   /* 图标样式 */
   .icon {
     @apply text-lg;
-    color: rgb(var(--color-primary-light));
-    filter: drop-shadow(0 0 3px rgba(var(--color-primary), 0.3));
+    color: rgb(var(--color-text-primary));
   }
   
   /* 选项按钮样式 */
   .btn-option {
-    @apply px-3 py-1.5 rounded-md border text-sm font-medium transition-all;
-    background-color: rgb(var(--color-bg-secondary));
+    @apply px-3 py-1.5 rounded-md border text-sm font-medium transition-colors;
+    background-color: transparent;
     color: rgb(var(--color-text-secondary));
-    border-color: rgba(var(--color-primary), 0.1);
+    border-color: transparent;
   }
   
   .btn-option:hover {
-    border-color: rgba(var(--color-primary), 0.5);
+    background-color: rgb(var(--color-bg-secondary));
     color: rgb(var(--color-text-primary));
-    background-color: rgba(var(--color-primary), 0.1);
   }
   
   .btn-option-active {
-    @apply px-3 py-1.5 rounded-md border text-sm font-medium transition-all;
-    background: linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-primary-hover)));
-    color: white;
-    border-color: rgba(var(--color-primary), 0.7);
-    box-shadow: 0 2px 4px rgba(var(--color-primary), 0.4);
+    @apply px-3 py-1.5 rounded-md border text-sm font-medium transition-colors shadow-sm;
+    background-color: rgb(var(--color-bg-secondary));
+    color: rgb(var(--color-text-primary));
+    border-color: var(--color-border);
   }
   
   /* 圆角按钮 */

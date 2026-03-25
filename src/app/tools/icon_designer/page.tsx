@@ -234,7 +234,7 @@ export default function IconDesigner() {
                     onClick={() => setIconType('fontawesome')}
                     className={`px-4 py-2 rounded-lg border transition-all ${
                       iconType === 'fontawesome'
-                        ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white border-purple-500 shadow-lg shadow-purple-500/25'
+                        ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-bg-main))] border-[var(--color-border)] shadow-sm'
                         : 'bg-card border-gray-600 text-secondary hover:border-purple-500/50'
                     }`}
                   >
@@ -244,7 +244,7 @@ export default function IconDesigner() {
                     onClick={() => setIconType('text')}
                     className={`px-4 py-2 rounded-lg border transition-all ${
                       iconType === 'text'
-                        ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white border-purple-500 shadow-lg shadow-purple-500/25'
+                        ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-bg-main))] border-[var(--color-border)] shadow-sm'
                         : 'bg-card border-gray-600 text-secondary hover:border-purple-500/50'
                     }`}
                   >

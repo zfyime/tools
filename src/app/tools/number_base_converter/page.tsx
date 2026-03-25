@@ -12,7 +12,7 @@ import { useLanguage } from '@/context/LanguageContext';
 const styles = {
   card: "card p-6",
   container: "min-h-screen flex flex-col max-w-[1440px] mx-auto p-4 md:p-6",
-  typeBtnActive: "px-4 py-2 rounded-md transition-all bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-hover))] text-white shadow-sm shadow-[rgba(var(--color-primary),0.3)]",
+  typeBtnActive: "px-4 py-2 rounded-md transition-all bg-[rgb(var(--color-primary))] text-[rgb(var(--color-bg-main))] shadow-sm border border-[var(--color-border)]",
   typeBtnInactive: "px-4 py-2 rounded-md transition-all btn-secondary",
   inputGroup: "flex flex-col gap-2 w-full",
   inputLabel: "text-sm font-medium text-secondary",

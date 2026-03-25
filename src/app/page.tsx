@@ -474,10 +474,10 @@ export default function Home() {
     <div className={`min-h-screen flex flex-col max-w-[1440px] mx-auto px-4 sm:px-8 py-4 sm:py-6 ${!iconsLoaded ? 'opacity-90' : 'opacity-100 transition-opacity duration-300'}`}>
       {/* 通知提示 */}
       {showNotification && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 flex items-center gap-2 bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-hover))] text-white px-4 py-3 rounded-lg shadow-lg animate-fadeIn">
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 flex items-center gap-2 bg-[rgb(var(--color-primary))] text-[rgb(var(--color-bg-main))] px-4 py-3 rounded-lg shadow-sm border border-[var(--color-border)] animate-fadeIn">
           <span>工具已添加到收藏夹，点击导航栏中的&quot;我的收藏&quot;查看</span>
           <button 
-            className="ml-2 text-white hover:text-[#F1F5F9] transition-colors"
+            className="ml-2 text-[rgb(var(--color-bg-main))] hover:opacity-80 transition-opacity"
             onClick={closeNotification}
           >
             <FontAwesomeIcon icon={faTimes} />
@@ -685,10 +685,10 @@ export default function Home() {
           {allCategories.map((category, index) => (
             <button 
               key={index}
-              className={`px-4 py-2 rounded-button whitespace-nowrap transition-all ${
+              className={`px-4 py-2 rounded-button whitespace-nowrap transition-all text-sm font-medium ${
                 activeCategory === category.code 
-                  ? 'bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-hover))] text-white shadow-sm' 
-                  : 'btn-secondary'
+                  ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-bg-main))] shadow-sm' 
+                  : 'btn-secondary text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))]'
               }`}
               onClick={() => handleCategoryChange(category.code)}
             >
@@ -739,7 +739,7 @@ export default function Home() {
                 >
                   <FontAwesomeIcon 
                     icon={favoriteTools.includes(tool.code) ? faStar : farStar}
-                    className={favoriteTools.includes(tool.code) ? 'text-[rgb(var(--color-primary-light))]' : ''} 
+                    className={favoriteTools.includes(tool.code) ? 'text-[rgb(var(--color-text-primary))]' : ''} 
                   />
                 </button>
               </div>
@@ -757,7 +757,7 @@ export default function Home() {
             href="https://github.com/star7th/jisuxiang" 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="mx-1 text-[rgb(var(--color-primary-light))] hover:underline transition-colors"
+            className="mx-1 text-[rgb(var(--color-text-primary))] hover:underline transition-colors"
           >
             极速箱
           </a>

@@ -18,7 +18,7 @@ const styles = {
   radioItem: "relative flex-1",
   radioInput: "absolute opacity-0 w-full h-full cursor-pointer",
   radioLabel: "block w-full px-4 py-2 text-center text-sm rounded-md border border-purple-glow/30 cursor-pointer hover:bg-block-hover transition-all",
-  radioActive: "bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white border-transparent shadow-md shadow-[#6366F1]/20",
+  radioActive: "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-bg-main))] border border-[var(--color-border)] shadow-sm",
   iconButton: "text-tertiary hover:text-purple transition-colors",
 }
 

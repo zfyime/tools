@@ -28,7 +28,7 @@ const styles = {
   loading: "text-purple animate-pulse",
   moduleLoading: "p-3 bg-purple-glow/10 border border-purple-glow/30 rounded-lg text-secondary",
   toggleBtn: "px-3 py-2 text-sm font-medium rounded-md transition-all",
-  toggleBtnActive: "bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-hover))] text-white shadow-sm",
+  toggleBtnActive: "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-bg-main))] shadow-sm border border-[var(--color-border)]",
   toggleBtnInactive: "btn-secondary",
   toggleContainer: "flex items-center rounded-md p-1 bg-block-strong",
   flexBetween: "flex flex-col sm:flex-row gap-4 justify-between items-center",

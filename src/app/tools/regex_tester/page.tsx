@@ -18,7 +18,7 @@ const styles = {
   codeBlock: "bg-block px-1 rounded",
   iconButton: "text-tertiary hover:text-purple transition-colors",
   selectedFlag: "bg-purple-glow/20 text-purple",
-  buttonActive: "px-3 py-1 text-xs rounded-md transition-all bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-hover))] text-white shadow-sm shadow-[rgba(var(--color-primary),0.3)]",
+  buttonActive: "px-3 py-1 text-xs rounded-md transition-all bg-[rgb(var(--color-primary))] text-[rgb(var(--color-bg-main))] shadow-sm border border-[var(--color-border)]",
   buttonInactive: "px-3 py-1 text-xs rounded-md transition-all btn-secondary",
   error: "text-error",
   highlightBg: "bg-purple-500/30 text-white font-medium",

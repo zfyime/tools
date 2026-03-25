@@ -116,7 +116,7 @@ const BackToTop: React.FC<BackToTopProps> = ({
       className={`
         fixed 
         ${getSizeClassName()} 
-        bg-gradient-to-r from-[#6366F1] to-[#8B5CF6]
+        bg-[rgb(var(--color-primary))]
         text-white 
         rounded-full 
         flex 

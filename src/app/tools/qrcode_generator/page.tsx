@@ -29,7 +29,7 @@ const styles = {
   label: "block text-sm text-secondary mb-2",
   input: "search-input w-full",
   rangeValue: "text-sm text-primary min-w-[40px] text-right",
-  buttonActive: "px-4 py-2 rounded-md transition-all bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-hover))] text-white shadow-sm shadow-[rgba(var(--color-primary),0.3)]",
+  buttonActive: "px-4 py-2 rounded-md transition-all bg-[rgb(var(--color-primary))] text-[rgb(var(--color-bg-main))] shadow-sm border border-[var(--color-border)]",
   buttonInactive: "px-4 py-2 rounded-md transition-all btn-secondary",
   presetButton: "p-2 rounded-md border transition-all hover:border-purple",
   colorBox: "w-5 h-5 rounded-sm border border-purple-glow/30",
