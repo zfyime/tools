@@ -56,7 +56,7 @@ export const jwtDecoderZh = {
   valid_remaining: '有效，剩余 {time}',
   not_set: '未设置过期时间',
   // 示例JWT用户
-  example_user: '极速箱用户'
+  example_user: '极速工具箱用户'
 };
 
 export default jwtDecoderZh; 

@@ -2,8 +2,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faCode, faCopy, faCheck, faCompress, faExpand, 
+import {
+  faCode, faCopy, faCheck, faCompress, faExpand,
   faSearch, faTrash, faSync, faFolderOpen, faFolder, faSpinner,
   faSave, faHistory, faTimes, faEdit, faStar, faTrashAlt, faEraser
 } from '@fortawesome/free-solid-svg-icons';
@@ -29,7 +29,7 @@ export default function JsonFormatter() {
   const [jsonInput, setJsonInput] = useState('');
   const jsonInputRef = useRef<HTMLTextAreaElement>(null);
   const jsonPathInputRef = useRef<HTMLInputElement>(null);
-  
+
   // 状态管理
   const [jsonOutput, setJsonOutput] = useState<string>('');
   const [jsonPath, setJsonPath] = useState<string>('');
@@ -44,17 +44,17 @@ export default function JsonFormatter() {
     isValid: boolean;
     message: string;
   }>({ isValid: false, message: '' });
-  
+
   // 历史记录相关状态
   const [historyItems, setHistoryItems] = useState<JsonHistoryItem[]>([]);
   const [isHistoryOpen, setIsHistoryOpen] = useState<boolean>(false);
   const [savingTitle, setSavingTitle] = useState<string>('');
   const [isSaveModalOpen, setIsSaveModalOpen] = useState<boolean>(false);
   const [editingItem, setEditingItem] = useState<JsonHistoryItem | null>(null);
-  
+
   // 参考值，确保能在格式化过程中保持加载状态
   const processingRef = useRef<boolean>(false);
-  
+
   // 从本地存储加载历史记录
   useEffect(() => {
     const savedHistory = localStorage.getItem('json_formatter_history');
@@ -72,7 +72,7 @@ export default function JsonFormatter() {
   const saveHistoryToLocalStorage = (items: JsonHistoryItem[]) => {
     localStorage.setItem('json_formatter_history', JSON.stringify(items));
   };
-  
+
   // 格式化JSON
   const formatJson = (json: string, compress = false) => {
     if (!json.trim()) {
@@ -80,15 +80,15 @@ export default function JsonFormatter() {
       setValidationResult({ isValid: false, message: '' });
       return;
     }
-    
+
     // 检查JSON大小
     const isLarge = json.length > 100000;
     setIsLargeJson(isLarge);
-    
+
     // 设置加载状态和处理参考值
     setIsLoading(true);
     processingRef.current = true;
-    
+
     // 使用setTimeout确保UI先更新，但不添加不必要的延迟
     setTimeout(() => {
       try {
@@ -96,7 +96,7 @@ export default function JsonFormatter() {
         const processedJson = json
           .replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2":') // 键名标准化
           .replace(/'/g, '"'); // 单引号转双引号
-        
+
         try {
           let parsed;
           try {
@@ -111,7 +111,7 @@ export default function JsonFormatter() {
               throw e; // 如果eval也失败了，抛出原始错误
             }
           }
-          
+
           // 根据模式输出不同格式
           let formattedJson;
           if (compress) {
@@ -119,25 +119,25 @@ export default function JsonFormatter() {
           } else {
             formattedJson = JSON.stringify(parsed, null, 2);
           }
-          
+
           // 设置输出
           setJsonOutput(formattedJson);
 
           // 计算大小
           const sizeKB = (formattedJson.length / 1024).toFixed(1);
           const largeJsonMessage = t('tools.json_formatter.large_json_processed').replace('{size}', sizeKB);
-          
-          setValidationResult({ 
-            isValid: true, 
-            message: isLarge ? largeJsonMessage : t('tools.json_formatter.json_valid') 
+
+          setValidationResult({
+            isValid: true,
+            message: isLarge ? largeJsonMessage : t('tools.json_formatter.json_valid')
           });
           setErrorMessage('');
-          
+
           // 如果有JSONPath查询，执行查询
           if (jsonPath) {
             queryJsonPath(parsed, jsonPath);
           }
-          
+
           // 完成后取消加载状态和处理参考值
           setIsLoading(false);
           processingRef.current = false;
@@ -159,62 +159,62 @@ export default function JsonFormatter() {
       }
     }, 0);
   };
-  
+
   // 取消正在进行的格式化操作
   const cancelFormatting = () => {
     processingRef.current = false;
     setIsLoading(false);
   };
-  
+
   // 清除组件卸载时可能的处理操作
   useEffect(() => {
     return () => {
       processingRef.current = false;
     };
   }, []);
-  
+
   // 压缩/美化切换
   const toggleCompression = () => {
     setIsCompressed(!isCompressed);
     formatJson(jsonInput, !isCompressed);
   };
-  
+
   // 切换折叠功能
   const toggleFoldable = () => {
     setIsFoldable(!isFoldable);
   };
-  
+
   // 移除JSON中的转义斜杠
   const removeSlashes = () => {
     if (!jsonInput) return;
-    
+
     try {
       // 直接在原始输入字符串上移除转义斜杠
       const processed = jsonInput.replace(/\\\/+/g, '/');
-      
+
       // 检查是否有变化
       if (processed === jsonInput) {
         console.log('没有检测到需要替换的内容，JSON未改变');
         return;
       }
-      
+
       console.log('移除斜杠前:', jsonInput);
       console.log('移除斜杠后:', processed);
-      
+
       // 更新输入框而不是直接格式化
       setJsonInput(processed);
-      
+
       // 手动触发格式化
       setTimeout(() => formatJson(processed, isCompressed), 100);
     } catch (error) {
       console.error('移除斜杠处理失败:', error);
     }
   };
-  
+
   // 字符串转义
   const escapeString = () => {
     if (!jsonInput) return;
-    
+
     try {
       // 将常见字符转义为JSON字符串中的格式
       const processed = jsonInput
@@ -225,26 +225,26 @@ export default function JsonFormatter() {
         .replace(/\t/g, '\\t')     // 转义制表符
         .replace(/\f/g, '\\f')     // 转义换页符
         .replace(/\b/g, '\\b');    // 转义退格符
-      
+
       // 检查是否有变化
       if (processed === jsonInput) {
         console.log('没有检测到需要转义的内容');
         return;
       }
-      
+
       // 更新输入框
       setJsonInput(processed);
-      
+
       // 不需要立即格式化，因为用户可能还需要进一步编辑
     } catch (error) {
       console.error('字符串转义处理失败:', error);
     }
   };
-  
+
   // 字符串反转义
   const unescapeString = () => {
     if (!jsonInput) return;
-    
+
     try {
       // 将JSON字符串中的转义字符还原为原始字符
       const processed = jsonInput
@@ -255,22 +255,22 @@ export default function JsonFormatter() {
         .replace(/\\f/g, '\f')     // 反转义换页符
         .replace(/\\b/g, '\b')     // 反转义退格符
         .replace(/\\\\/g, '\\');   // 最后反转义反斜杠
-      
+
       // 检查是否有变化
       if (processed === jsonInput) {
         console.log('没有检测到需要反转义的内容');
         return;
       }
-      
+
       // 更新输入框
       setJsonInput(processed);
-      
+
       // 不需要立即格式化，因为用户可能还需要进一步编辑
     } catch (error) {
       console.error('字符串反转义处理失败:', error);
     }
   };
-  
+
   // 复制结果到剪贴板
   const copyToClipboard = () => {
     if (jsonOutput) {
@@ -282,14 +282,14 @@ export default function JsonFormatter() {
         .catch(err => console.error(t('tools.json_formatter.copy_failed'), err));
     }
   };
-  
+
   // 清空输入
   const clearInput = () => {
     // 如果正在处理，先取消
     if (isLoading) {
       cancelFormatting();
     }
-    
+
     setJsonInput('');
     setJsonOutput('');
     setErrorMessage('');
@@ -299,13 +299,13 @@ export default function JsonFormatter() {
       jsonInputRef.current.focus();
     }
   };
-  
+
   // 处理输入变化
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     setJsonInput(value);
   };
-  
+
   // 处理粘贴事件
   const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     // 获取粘贴的内容
@@ -315,7 +315,7 @@ export default function JsonFormatter() {
       if (isLoading) {
         cancelFormatting();
       }
-      
+
       // 更新输入内容
       setJsonInput(pastedText);
       // 立即设置加载状态但延迟执行格式化，确保UI更新
@@ -324,12 +324,12 @@ export default function JsonFormatter() {
       setTimeout(() => formatJson(pastedText, isCompressed), 100);
     }
   };
-  
+
   // 路径查询变化
   const handlePathChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setJsonPath(value);
-    
+
     // 如果有有效的JSON和路径，执行查询
     if (value && jsonOutput) {
       try {
@@ -343,23 +343,23 @@ export default function JsonFormatter() {
       setPathResult('');
     }
   };
-  
+
   // 执行JSONPath查询
   const queryJsonPath = (json: Record<string, unknown>, path: string) => {
     if (!path) {
       setPathResult('');
       return;
     }
-    
+
     try {
       // 简单的路径解析，支持点符号和方括号
       const segments = path
         .replace(/\[(\w+)\]/g, '.$1') // 将[abc]转换为.abc
         .replace(/^\./, '') // 移除开头的点
         .split('.');
-      
+
       let result: unknown = json;
-      
+
       for (const segment of segments) {
         if (typeof result === 'object' && result !== null && segment in result) {
           result = (result as Record<string, unknown>)[segment];
@@ -367,7 +367,7 @@ export default function JsonFormatter() {
           throw new Error(`路径 '${path}' 不存在`);
         }
       }
-      
+
       // 格式化结果
       if (typeof result === 'object' && result !== null) {
         setPathResult(JSON.stringify(result, null, 2));
@@ -380,16 +380,16 @@ export default function JsonFormatter() {
       }
     }
   };
-  
+
   // 加载示例JSON
   const loadExample = () => {
     // 如果正在处理，先取消
     if (isLoading) {
       cancelFormatting();
     }
-    
+
     const example = {
-      name: "极速箱",
+      name: "极速工具箱",
       version: "1.0.0",
       description: "高效开发工具集成平台",
       author: {
@@ -410,33 +410,33 @@ export default function JsonFormatter() {
       isOpenSource: true,
       lastUpdate: "2063-12-01T08:00:00Z"
     };
-    
+
     const exampleJson = JSON.stringify(example);
     setJsonInput(exampleJson);
     formatJson(exampleJson, isCompressed);
   };
-  
+
   // 重新格式化
   const reformat = () => {
     // 如果正在处理，先取消
     if (isLoading) {
       cancelFormatting();
     }
-    
+
     formatJson(jsonInput, isCompressed);
   };
-  
+
   // 渲染可折叠的JSON
   const renderFoldableJson = (jsonStr: string) => {
     if (!jsonStr) return null;
-    
+
     try {
       const jsonObj = JSON.parse(jsonStr);
       return (
         <div className="json-viewer-theme">
           <ReactJson
             value={jsonObj}
-            style={{ 
+            style={{
               backgroundColor: 'transparent',
               fontFamily: 'monospace',
               fontSize: '0.95rem',
@@ -455,34 +455,33 @@ export default function JsonFormatter() {
       return <pre className="whitespace-pre-wrap m-0">{jsonStr}</pre>;
     }
   };
-  
+
   // 处理输入/输出区域的样式
   const getTextareaClasses = (hasError: boolean) => {
-    return `w-full p-4 font-mono text-sm rounded-md border ${
-      hasError ? 'border-[rgb(var(--color-error))]' : 'border-[rgba(var(--color-primary),0.2)]'
-    } focus:outline-none focus:border-[rgb(var(--color-primary))] focus:ring-1 focus:ring-[rgb(var(--color-primary))] min-h-[350px] transition-all bg-[rgb(var(--color-bg-secondary))] text-[rgb(var(--color-text-primary))]`;
+    return `w-full p-4 font-mono text-sm rounded-md border ${hasError ? 'border-[rgb(var(--color-error))]' : 'border-[rgba(var(--color-primary),0.2)]'
+      } focus:outline-none focus:border-[rgb(var(--color-primary))] focus:ring-1 focus:ring-[rgb(var(--color-primary))] min-h-[350px] transition-all bg-[rgb(var(--color-bg-secondary))] text-[rgb(var(--color-text-primary))]`;
   };
-  
+
   // 右侧输出区域样式
   const outputAreaClasses = `${getTextareaClasses(false)} overflow-auto relative flex-grow json-output-area`;
-  
+
   // 工具栏按钮样式
   const toolbarButtonClass = "px-3 py-1.5 rounded text-sm flex items-center gap-1 transition-all border border-transparent hover:border-[rgba(var(--color-primary),0.3)]";
-  
+
   // 历史记录项目样式
   const historyItemClass = "p-3 rounded-md border border-[rgba(var(--color-primary),0.15)] hover:border-[rgba(var(--color-primary),0.4)] transition-all cursor-pointer bg-[rgb(var(--color-bg-secondary))] flex justify-between items-center mb-2";
-  
+
   // 自动格式化（仅在首次输入更改后）
   useEffect(() => {
     if (jsonInput) {
       formatJson(jsonInput, isCompressed);
     }
   }, []);
-  
+
   // 保存当前JSON到历史记录
   const saveToHistory = () => {
     if (!jsonOutput || !jsonOutput.trim()) return;
-    
+
     if (editingItem) {
       // 更新现有项目
       const updatedItem = {
@@ -491,11 +490,11 @@ export default function JsonFormatter() {
         json: jsonOutput,
         timestamp: Date.now()
       };
-      
-      const updatedHistory = historyItems.map(item => 
+
+      const updatedHistory = historyItems.map(item =>
         item.id === editingItem.id ? updatedItem : item
       );
-      
+
       setHistoryItems(updatedHistory);
       saveHistoryToLocalStorage(updatedHistory);
     } else {
@@ -506,34 +505,34 @@ export default function JsonFormatter() {
         json: jsonOutput,
         timestamp: Date.now()
       };
-      
+
       const updatedHistory = [newItem, ...historyItems];
       setHistoryItems(updatedHistory);
       saveHistoryToLocalStorage(updatedHistory);
     }
-    
+
     // 重置状态
     setSavingTitle('');
     setIsSaveModalOpen(false);
     setEditingItem(null);
   };
-  
+
   // 加载历史记录中的JSON
   const loadFromHistory = (item: JsonHistoryItem) => {
     setJsonInput(item.json);
     formatJson(item.json, isCompressed);
     setIsHistoryOpen(false);
   };
-  
+
   // 删除历史记录项目
   const deleteHistoryItem = (id: string, e: React.MouseEvent) => {
     e.stopPropagation(); // 防止触发父元素的点击事件
-    
+
     const updatedHistory = historyItems.filter(item => item.id !== id);
     setHistoryItems(updatedHistory);
     saveHistoryToLocalStorage(updatedHistory);
   };
-  
+
   // 编辑历史记录项目标题
   const startEditingTitle = (item: JsonHistoryItem, e: React.MouseEvent) => {
     e.stopPropagation(); // 防止触发父元素的点击事件
@@ -541,22 +540,22 @@ export default function JsonFormatter() {
     setSavingTitle(item.title);
     setIsSaveModalOpen(true);
   };
-  
+
   // 切换收藏状态
   const toggleFavorite = (id: string, e: React.MouseEvent) => {
     e.stopPropagation(); // 防止触发父元素的点击事件
-    
+
     const updatedHistory = historyItems.map(item => {
       if (item.id === id) {
         return { ...item, isFavorite: !item.isFavorite };
       }
       return item;
     });
-    
+
     setHistoryItems(updatedHistory);
     saveHistoryToLocalStorage(updatedHistory);
   };
-  
+
   return (
     <div className="min-h-screen flex flex-col max-w-[1440px] mx-auto p-4 md:p-6">
       {/* 使用自定义样式 */}
@@ -754,13 +753,13 @@ export default function JsonFormatter() {
       `}</style>
 
       {/* 使用 ToolHeader 组件 */}
-      <ToolHeader 
+      <ToolHeader
         toolCode="json_formatter"
         icon={faCode}
         title={t('tools.json_formatter.title')}
         description={t('tools.json_formatter.description')}
       />
-      
+
       {/* 验证状态显示 */}
       <div className="text-center mb-4">
         {validationResult.message && !isLoading && (
@@ -769,113 +768,113 @@ export default function JsonFormatter() {
           </span>
         )}
         {isLoading && (
-          <span className="flex items-center justify-center" style={{color: 'rgb(var(--color-text-tertiary))'}}>
+          <span className="flex items-center justify-center" style={{ color: 'rgb(var(--color-text-tertiary))' }}>
             <FontAwesomeIcon icon={faSpinner} className="animate-spin mr-1" />
             <span>{isLargeJson ? t('tools.json_formatter.processing_large_json') : t('tools.json_formatter.parsing_json')}</span>
           </span>
         )}
       </div>
-      
+
       {/* 工具栏 */}
       <div className="flex flex-wrap gap-2 mb-4">
-        <button 
-          className={`${toolbarButtonClass} bg-[rgb(var(--color-bg-secondary))] text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))]`} 
-          onClick={toggleCompression} 
+        <button
+          className={`${toolbarButtonClass} bg-[rgb(var(--color-bg-secondary))] text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))]`}
+          onClick={toggleCompression}
           disabled={isLoading}
         >
           <FontAwesomeIcon icon={isCompressed ? faExpand : faCompress} />
           <span>{isCompressed ? t('tools.json_formatter.beautify') : t('tools.json_formatter.compress')}</span>
         </button>
-        <button 
+        <button
           className={`${toolbarButtonClass} bg-[rgb(var(--color-bg-secondary))] text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))]`}
-          onClick={toggleFoldable} 
+          onClick={toggleFoldable}
           disabled={isLoading || !jsonOutput}
         >
           <FontAwesomeIcon icon={isFoldable ? faFolder : faFolderOpen} />
           <span>{isFoldable ? t('tools.json_formatter.normal_mode') : t('tools.json_formatter.fold_mode')}</span>
         </button>
-        <button 
+        <button
           className={`${toolbarButtonClass} bg-[rgb(var(--color-bg-secondary))] text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))]`}
-          onClick={copyToClipboard} 
+          onClick={copyToClipboard}
           disabled={!jsonOutput || isLoading}
         >
           <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
           <span>{copied ? t('common.copySuccess') : t('tools.json_formatter.copy')}</span>
         </button>
-        <button 
+        <button
           className={`${toolbarButtonClass} bg-[rgb(var(--color-bg-secondary))] text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))]`}
-          onClick={clearInput} 
+          onClick={clearInput}
           disabled={isLoading}
         >
           <FontAwesomeIcon icon={faTrash} />
           <span>{t('tools.json_formatter.clear')}</span>
         </button>
-        <button 
+        <button
           className={`${toolbarButtonClass} bg-[rgb(var(--color-bg-secondary))] text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))]`}
-          onClick={loadExample} 
+          onClick={loadExample}
           disabled={isLoading}
         >
           <FontAwesomeIcon icon={faCode} />
           <span>{t('tools.json_formatter.load_example')}</span>
         </button>
-        <button 
+        <button
           className={`${toolbarButtonClass} bg-[rgb(var(--color-bg-secondary))] text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))]`}
-          onClick={reformat} 
+          onClick={reformat}
           disabled={!jsonInput || isLoading}
         >
           <FontAwesomeIcon icon={faSync} className={isLoading ? 'animate-spin' : ''} />
           <span>{isLoading ? t('tools.json_formatter.processing') : t('tools.json_formatter.reformat')}</span>
         </button>
-        
+
         {/* 新增的保存和历史记录按钮 */}
-        <button 
+        <button
           className={`${toolbarButtonClass} bg-[rgb(var(--color-bg-secondary))] text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))]`}
-          onClick={() => setIsSaveModalOpen(true)} 
+          onClick={() => setIsSaveModalOpen(true)}
           disabled={!jsonOutput || isLoading}
         >
           <FontAwesomeIcon icon={faSave} />
           <span>{t('tools.json_formatter.save')}</span>
         </button>
-        <button 
+        <button
           className={`${toolbarButtonClass} bg-[rgb(var(--color-bg-secondary))] text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))]`}
           onClick={() => setIsHistoryOpen(true)}
         >
           <FontAwesomeIcon icon={faHistory} />
           <span>{t('tools.json_formatter.history')}</span>
         </button>
-        
+
         {/* 移除斜杠按钮 */}
-        <button 
+        <button
           className={`${toolbarButtonClass} bg-[rgb(var(--color-bg-secondary))] text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))]`}
-          onClick={removeSlashes} 
+          onClick={removeSlashes}
           disabled={!jsonInput || isLoading}
         >
           <FontAwesomeIcon icon={faEraser} />
           <span>{t('tools.json_formatter.remove_slash')}</span>
         </button>
-        
+
         {/* 字符串转义按钮 */}
-        <button 
+        <button
           className={`${toolbarButtonClass} bg-[rgb(var(--color-bg-secondary))] text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))]`}
-          onClick={escapeString} 
+          onClick={escapeString}
           disabled={!jsonInput || isLoading}
         >
           <FontAwesomeIcon icon={faCode} />
           <span>{t('tools.json_formatter.escape_string')}</span>
         </button>
-        
+
         {/* 字符串反转义按钮 */}
-        <button 
+        <button
           className={`${toolbarButtonClass} bg-[rgb(var(--color-bg-secondary))] text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))]`}
-          onClick={unescapeString} 
+          onClick={unescapeString}
           disabled={!jsonInput || isLoading}
         >
           <FontAwesomeIcon icon={faSync} />
           <span>{t('tools.json_formatter.unescape_string')}</span>
         </button>
-        
+
         {isLoading && (
-          <button 
+          <button
             className="px-3 py-1.5 rounded text-sm flex items-center gap-1 transition-all border"
             style={{
               backgroundColor: 'rgb(var(--color-bg-secondary))',
@@ -890,14 +889,14 @@ export default function JsonFormatter() {
           </button>
         )}
       </div>
-      
+
       {/* 主内容区 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 flex-grow">
         {/* 输入区域 */}
         <div className="flex flex-col h-full">
           <div className="mb-2 flex items-center justify-between">
-            <label className="text-sm font-medium" style={{color: 'rgb(var(--color-text-secondary))'}}>{t('tools.json_formatter.input_json')}</label>
-            <div className="text-xs" style={{color: 'rgb(var(--color-text-tertiary))'}}>{t('tools.json_formatter.paste_json_here')}</div>
+            <label className="text-sm font-medium" style={{ color: 'rgb(var(--color-text-secondary))' }}>{t('tools.json_formatter.input_json')}</label>
+            <div className="text-xs" style={{ color: 'rgb(var(--color-text-tertiary))' }}>{t('tools.json_formatter.paste_json_here')}</div>
           </div>
           <div className="flex-grow flex flex-col">
             <textarea
@@ -917,12 +916,12 @@ export default function JsonFormatter() {
             )}
           </div>
         </div>
-        
+
         {/* 输出区域 */}
         <div className="flex flex-col h-full">
           <div className="mb-2 flex items-center justify-between">
-            <label className="text-sm font-medium" style={{color: 'rgb(var(--color-text-secondary))'}}>{t('tools.json_formatter.output')}</label>
-            <div className="text-xs" style={{color: 'rgb(var(--color-text-tertiary))'}}>
+            <label className="text-sm font-medium" style={{ color: 'rgb(var(--color-text-secondary))' }}>{t('tools.json_formatter.output')}</label>
+            <div className="text-xs" style={{ color: 'rgb(var(--color-text-tertiary))' }}>
               {jsonOutput && !isLoading && `${jsonOutput.length.toLocaleString()} ${t('tools.json_formatter.characters')}`}
               {isLoading && (
                 <span className="flex items-center">
@@ -935,15 +934,15 @@ export default function JsonFormatter() {
           <div className={outputAreaClasses}>
             {isLoading ? (
               <div className="absolute inset-0 flex items-center justify-center backdrop-blur-sm"
-                   style={{backgroundColor: 'rgba(var(--color-bg-secondary), 0.7)'}}>
+                style={{ backgroundColor: 'rgba(var(--color-bg-secondary), 0.7)' }}>
                 <div className="flex flex-col items-center space-y-2">
-                  <FontAwesomeIcon icon={faSpinner} className="animate-spin text-2xl" style={{color: 'rgb(var(--color-primary))'}} />
-                  <span style={{color: 'rgb(var(--color-text-secondary))'}} className="text-center">
-                    {isLargeJson ? 
-                      t('tools.json_formatter.processing_large_json_message') : 
+                  <FontAwesomeIcon icon={faSpinner} className="animate-spin text-2xl" style={{ color: 'rgb(var(--color-primary))' }} />
+                  <span style={{ color: 'rgb(var(--color-text-secondary))' }} className="text-center">
+                    {isLargeJson ?
+                      t('tools.json_formatter.processing_large_json_message') :
                       t('tools.json_formatter.parsing_json')}
                   </span>
-                  <button 
+                  <button
                     className="mt-3 px-3 py-1.5 text-xs rounded transition-all border"
                     style={{
                       backgroundColor: 'rgb(var(--color-bg-secondary))',
@@ -959,17 +958,17 @@ export default function JsonFormatter() {
             ) : isFoldable ? (
               renderFoldableJson(jsonOutput)
             ) : (
-              <pre className="whitespace-pre-wrap m-0 text-base leading-7" style={{color: 'rgb(var(--color-text-primary))'}}>{jsonOutput}</pre>
+              <pre className="whitespace-pre-wrap m-0 text-base leading-7" style={{ color: 'rgb(var(--color-text-primary))' }}>{jsonOutput}</pre>
             )}
           </div>
         </div>
       </div>
-      
+
       {/* JSONPath查询 */}
       <div className="mt-4 card p-4">
         <div className="mb-2">
-          <label className="text-sm font-medium" style={{color: 'rgb(var(--color-text-secondary))'}}>{t('tools.json_formatter.jsonpath_query')}</label>
-          <div className="text-xs mt-1" style={{color: 'rgb(var(--color-text-tertiary))'}}>
+          <label className="text-sm font-medium" style={{ color: 'rgb(var(--color-text-secondary))' }}>{t('tools.json_formatter.jsonpath_query')}</label>
+          <div className="text-xs mt-1" style={{ color: 'rgb(var(--color-text-tertiary))' }}>
             {t('tools.json_formatter.enter_jsonpath')}
           </div>
         </div>
@@ -979,7 +978,7 @@ export default function JsonFormatter() {
               <FontAwesomeIcon
                 icon={faSearch}
                 className="absolute left-3 top-1/2 -translate-y-1/2"
-                style={{color: 'rgb(var(--color-text-tertiary))'}}
+                style={{ color: 'rgb(var(--color-text-tertiary))' }}
               />
               <input
                 ref={jsonPathInputRef}
@@ -994,31 +993,31 @@ export default function JsonFormatter() {
           </div>
           <div className="flex-1">
             <div className="p-3 rounded-md min-h-[40px] text-sm"
-                 style={{
-                   backgroundColor: 'rgb(var(--color-bg-secondary))',
-                   color: 'rgb(var(--color-text-secondary))'
-                 }}>
+              style={{
+                backgroundColor: 'rgb(var(--color-bg-secondary))',
+                color: 'rgb(var(--color-text-secondary))'
+              }}>
               <pre className="whitespace-pre-wrap">{pathResult || t('tools.json_formatter.query_result_placeholder')}</pre>
             </div>
           </div>
         </div>
       </div>
-      
+
       {/* 历史记录侧边栏 */}
       <div className={`history-overlay ${isHistoryOpen ? 'open' : ''}`} onClick={() => setIsHistoryOpen(false)}></div>
       <div className={`history-panel ${isHistoryOpen ? 'open' : ''}`}>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium" style={{color: 'rgb(var(--color-text-primary))'}}>{t('tools.json_formatter.history')}</h3>
-          <button 
+          <h3 className="text-lg font-medium" style={{ color: 'rgb(var(--color-text-primary))' }}>{t('tools.json_formatter.history')}</h3>
+          <button
             className="p-2 rounded-full hover:bg-[rgba(var(--color-primary),0.1)]"
             onClick={() => setIsHistoryOpen(false)}
           >
-            <FontAwesomeIcon icon={faTimes} style={{color: 'rgb(var(--color-text-secondary))'}} />
+            <FontAwesomeIcon icon={faTimes} style={{ color: 'rgb(var(--color-text-secondary))' }} />
           </button>
         </div>
-        
+
         {historyItems.length === 0 ? (
-          <div className="text-center py-8" style={{color: 'rgb(var(--color-text-tertiary))'}}>
+          <div className="text-center py-8" style={{ color: 'rgb(var(--color-text-tertiary))' }}>
             <p>{t('tools.json_formatter.no_saved_records')}</p>
             <p className="text-sm mt-2">{t('tools.json_formatter.save_first_record')}</p>
           </div>
@@ -1027,37 +1026,37 @@ export default function JsonFormatter() {
             {/* 收藏的项目 */}
             {historyItems.some(item => item.isFavorite) && (
               <div className="mb-4">
-                <h4 className="text-sm font-medium mb-2" style={{color: 'rgb(var(--color-text-secondary))'}}>{t('tools.json_formatter.favorites')}</h4>
+                <h4 className="text-sm font-medium mb-2" style={{ color: 'rgb(var(--color-text-secondary))' }}>{t('tools.json_formatter.favorites')}</h4>
                 {historyItems
                   .filter(item => item.isFavorite)
                   .map(item => (
                     <div key={item.id} className={historyItemClass} onClick={() => loadFromHistory(item)}>
                       <div className="flex-1 truncate">
                         <div className="font-medium truncate">{item.title}</div>
-                        <div className="text-xs" style={{color: 'rgb(var(--color-text-tertiary))'}}>
+                        <div className="text-xs" style={{ color: 'rgb(var(--color-text-tertiary))' }}>
                           {new Date(item.timestamp).toLocaleString()}
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button 
-                          onClick={(e) => toggleFavorite(item.id, e)} 
+                        <button
+                          onClick={(e) => toggleFavorite(item.id, e)}
                           title={item.isFavorite ? t('tools.json_formatter.remove_favorite') : t('tools.json_formatter.add_favorite')}
                         >
-                          <FontAwesomeIcon 
-                            icon={faStar} 
-                            className={`favorite-icon ${item.isFavorite ? 'active' : ''}`} 
+                          <FontAwesomeIcon
+                            icon={faStar}
+                            className={`favorite-icon ${item.isFavorite ? 'active' : ''}`}
                           />
                         </button>
                         <button onClick={(e) => startEditingTitle(item, e)} title={t('tools.json_formatter.edit_title')}>
-                          <FontAwesomeIcon 
-                            icon={faEdit} 
-                            style={{color: 'rgb(var(--color-text-tertiary))'}} 
+                          <FontAwesomeIcon
+                            icon={faEdit}
+                            style={{ color: 'rgb(var(--color-text-tertiary))' }}
                           />
                         </button>
                         <button onClick={(e) => deleteHistoryItem(item.id, e)} title={t('tools.json_formatter.delete')}>
-                          <FontAwesomeIcon 
-                            icon={faTrashAlt} 
-                            style={{color: 'rgb(var(--color-text-tertiary))'}} 
+                          <FontAwesomeIcon
+                            icon={faTrashAlt}
+                            style={{ color: 'rgb(var(--color-text-tertiary))' }}
                           />
                         </button>
                       </div>
@@ -1065,37 +1064,37 @@ export default function JsonFormatter() {
                   ))}
               </div>
             )}
-            
+
             {/* 全部历史记录 */}
-            <h4 className="text-sm font-medium mb-2" style={{color: 'rgb(var(--color-text-secondary))'}}>{t('tools.json_formatter.all_history')}</h4>
+            <h4 className="text-sm font-medium mb-2" style={{ color: 'rgb(var(--color-text-secondary))' }}>{t('tools.json_formatter.all_history')}</h4>
             {historyItems.map(item => (
               <div key={item.id} className={historyItemClass} onClick={() => loadFromHistory(item)}>
                 <div className="flex-1 truncate">
                   <div className="font-medium truncate">{item.title}</div>
-                  <div className="text-xs" style={{color: 'rgb(var(--color-text-tertiary))'}}>
+                  <div className="text-xs" style={{ color: 'rgb(var(--color-text-tertiary))' }}>
                     {new Date(item.timestamp).toLocaleString()}
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button 
-                    onClick={(e) => toggleFavorite(item.id, e)} 
+                  <button
+                    onClick={(e) => toggleFavorite(item.id, e)}
                     title={item.isFavorite ? t('tools.json_formatter.remove_favorite') : t('tools.json_formatter.add_favorite')}
                   >
-                    <FontAwesomeIcon 
-                      icon={faStar} 
-                      className={`favorite-icon ${item.isFavorite ? 'active' : ''}`} 
+                    <FontAwesomeIcon
+                      icon={faStar}
+                      className={`favorite-icon ${item.isFavorite ? 'active' : ''}`}
                     />
                   </button>
                   <button onClick={(e) => startEditingTitle(item, e)} title={t('tools.json_formatter.edit_title')}>
-                    <FontAwesomeIcon 
-                      icon={faEdit} 
-                      style={{color: 'rgb(var(--color-text-tertiary))'}} 
+                    <FontAwesomeIcon
+                      icon={faEdit}
+                      style={{ color: 'rgb(var(--color-text-tertiary))' }}
                     />
                   </button>
                   <button onClick={(e) => deleteHistoryItem(item.id, e)} title={t('tools.json_formatter.delete')}>
-                    <FontAwesomeIcon 
-                      icon={faTrashAlt} 
-                      style={{color: 'rgb(var(--color-text-tertiary))'}} 
+                    <FontAwesomeIcon
+                      icon={faTrashAlt}
+                      style={{ color: 'rgb(var(--color-text-tertiary))' }}
                     />
                   </button>
                 </div>
@@ -1104,16 +1103,16 @@ export default function JsonFormatter() {
           </div>
         )}
       </div>
-      
+
       {/* 保存模态框 */}
       {isSaveModalOpen && (
         <div className="modal-overlay">
           <div className="modal-container">
-            <h3 className="text-lg font-medium mb-4" style={{color: 'rgb(var(--color-text-primary))'}}>
+            <h3 className="text-lg font-medium mb-4" style={{ color: 'rgb(var(--color-text-primary))' }}>
               {editingItem ? t('tools.json_formatter.edit_saved_json') : t('tools.json_formatter.save_to_history')}
             </h3>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1" style={{color: 'rgb(var(--color-text-secondary))'}}>
+              <label className="block text-sm font-medium mb-1" style={{ color: 'rgb(var(--color-text-secondary))' }}>
                 {t('tools.json_formatter.title')}
               </label>
               <input
@@ -1155,8 +1154,8 @@ export default function JsonFormatter() {
       )}
 
       {/* 说明信息 */}
-      <div className="mt-8 text-sm" style={{color: 'rgb(var(--color-text-tertiary))'}}>
-        <h3 className="mb-2 font-medium" style={{color: 'rgb(var(--color-text-secondary))'}}>{t('tools.json_formatter.usage_guide')}</h3>
+      <div className="mt-8 text-sm" style={{ color: 'rgb(var(--color-text-tertiary))' }}>
+        <h3 className="mb-2 font-medium" style={{ color: 'rgb(var(--color-text-secondary))' }}>{t('tools.json_formatter.usage_guide')}</h3>
         <ul className="list-disc pl-5 space-y-1">
           <li>{t('tools.json_formatter.guide_1')}</li>
           <li>{t('tools.json_formatter.guide_2')}</li>

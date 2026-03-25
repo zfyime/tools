@@ -23,7 +23,7 @@ export const commonZh = {
     siteDesc: '高效开发工具集成平台',
     productRecommend: '产品推荐',
     feedback: '提供反馈',
-    siteName: '极速箱'
+    siteName: '极速工具箱'
   },
   categories: {
     all: '全部工具',
