@@ -15,6 +15,27 @@ interface ConversionResult {
   type: 'image' | 'text';
 }
 
+const styles = {
+  page: 'min-h-screen bg-main text-primary',
+  shell: 'mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-6 md:px-6',
+  content: 'mx-auto w-full max-w-5xl space-y-6',
+  card: 'card p-6',
+  sectionTitle: 'text-lg font-semibold tracking-tight text-primary',
+  sectionDescription: 'mt-1 text-sm text-secondary',
+  fieldLabel: 'mb-2 block text-sm font-medium text-primary',
+  select: 'search-input w-full appearance-none px-3 py-2.5 pl-3',
+  optionGrid: 'grid grid-cols-1 gap-3 md:grid-cols-2',
+  optionButton: (active: boolean) =>
+    `rounded-xl border px-4 py-4 text-left transition-all ${
+      active
+        ? 'border-[rgba(var(--color-text-primary),0.35)] bg-[rgb(var(--color-bg-secondary))] text-primary shadow-sm'
+        : 'border-[var(--color-border)] bg-transparent text-secondary hover:border-[rgba(var(--color-text-secondary),0.35)] hover:bg-[rgba(var(--color-bg-secondary),0.35)]'
+    }`,
+  hintBox: 'rounded-xl border border-[var(--color-border)] bg-block p-4',
+  alert: 'rounded-xl border border-[rgba(var(--color-error),0.24)] bg-[rgba(var(--color-error),0.08)] px-4 py-3 text-sm text-[rgb(var(--color-error))]',
+  resultItem: 'flex flex-col gap-3 rounded-xl border border-[var(--color-border)] bg-block p-4 sm:flex-row sm:items-center sm:justify-between',
+};
+
 export default function PDFConverterPage() {
   const { t } = useLanguage();
   const [files, setFiles] = useState<File[]>([]);
@@ -131,7 +152,7 @@ export default function PDFConverterPage() {
     }
   };
 
-  const startConversion = useCallback(async () => {
+  const startConversion = async () => {
     if (files.length === 0) {
       setError(t('tools.pdf_converter.errors.no_file'));
       return;
@@ -202,7 +223,7 @@ export default function PDFConverterPage() {
     } finally {
       setIsConverting(false);
     }
-  }, [files, conversionType, imageFormat, imageQuality, t, pdfjsLib]);
+  };
 
   const downloadResult = useCallback((result: ConversionResult) => {
     const link = document.createElement('a');
@@ -233,53 +254,57 @@ export default function PDFConverterPage() {
   // 如果不在客户端，显示加载状态
   if (!isClient) {
     return (
-      <div className="min-h-screen bg-gray-900 text-gray-100 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-main text-primary">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
-          <p>加载中...</p>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-2 border-[rgba(var(--color-text-secondary),0.25)] border-r-[rgb(var(--color-primary))]" />
+          <p className="text-sm text-secondary">加载中...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100">
-      <ToolHeader 
-        toolCode="pdf_converter"
-        title={t('tools.pdf_converter.title')}
-        description={t('tools.pdf_converter.description')}
-        icon={faExchangeAlt}
-      />
-      
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto space-y-6">
+    <div className={styles.page}>
+      <div className={styles.shell}>
+        <ToolHeader 
+          toolCode="pdf_converter"
+          title={t('tools.pdf_converter.title')}
+          description={t('tools.pdf_converter.description')}
+          icon={faExchangeAlt}
+        />
+        
+        <div className={styles.content}>
           {/* 转换类型选择 */}
-          <div className="bg-gray-800 rounded-lg p-6">
-            <h3 className="text-lg font-semibold mb-4">转换类型</h3>
-            <div className="grid grid-cols-2 gap-3">
+          <section className={styles.card}>
+            <div className="mb-5">
+              <h3 className={styles.sectionTitle}>转换类型</h3>
+              <p className={styles.sectionDescription}>统一选择输出目标，再按对应参数生成文件。</p>
+            </div>
+            <div className={styles.optionGrid}>
               {(['pdf_to_image', 'pdf_to_text'] as const).map((type) => (
                 <button
                   key={type}
                   onClick={() => setConversionType(type)}
-                  className={`p-3 rounded-lg border transition-colors ${
-                    conversionType === type
-                      ? 'border-purple-500 bg-purple-600 text-white'
-                      : 'border-gray-600 hover:border-purple-500'
-                  }`}
+                  className={styles.optionButton(conversionType === type)}
                 >
-                  {type === 'pdf_to_image' ? 'PDF转图片' : 'PDF转文本'}
+                  <span className="block font-medium text-current">
+                    {type === 'pdf_to_image' ? 'PDF 转图片' : 'PDF 转文本'}
+                  </span>
+                  <span className="mt-1 block text-sm text-secondary">
+                    {type === 'pdf_to_image' ? '按页导出 PNG、JPEG 或 WebP。' : '跳转到更适合文本提取的工具。'}
+                  </span>
                 </button>
               ))}
             </div>
-          </div>
+          </section>
 
           {/* PDF转文本提示 */}
           {conversionType === 'pdf_to_text' && (
-            <div className="bg-blue-600 text-white p-4 rounded-lg">
-              <div className="flex items-center justify-between">
+            <div className={styles.hintBox}>
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <p className="font-medium mb-2">推荐使用文件转Markdown工具</p>
-                  <p className="text-sm opacity-90">
+                  <p className="mb-2 font-medium text-primary">推荐使用文件转 Markdown 工具</p>
+                  <p className="text-sm text-secondary">
                     PDF转文本功能建议使用我们的文件转Markdown工具，支持更好的文本提取和格式转换。
                   </p>
                 </div>
@@ -287,9 +312,8 @@ export default function PDFConverterPage() {
                   href="https://www.jisuxiang.com/tools/file_to_markdown_converter"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg transition-colors flex items-center gap-2"
+                  className="btn-secondary inline-flex items-center justify-center px-4 py-2"
                 >
-                  <i className="fas fa-external-link-alt"></i>
                   打开工具
                 </a>
               </div>
@@ -297,19 +321,22 @@ export default function PDFConverterPage() {
           )}
 
           {/* 转换设置 */}
-          <div className="bg-gray-800 rounded-lg p-6">
-            <h3 className="text-lg font-semibold mb-4">转换设置</h3>
+          <section className={styles.card}>
+            <div className="mb-5">
+              <h3 className={styles.sectionTitle}>转换设置</h3>
+              <p className={styles.sectionDescription}>按输出格式调整图片编码和质量。</p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {conversionType === 'pdf_to_image' && (
                 <>
                   <div>
-                    <label className="block text-sm font-medium mb-2">
+                    <label className={styles.fieldLabel}>
                       图片格式
                     </label>
                     <select
                       value={imageFormat}
                       onChange={(e) => setImageFormat(e.target.value as 'png' | 'jpeg' | 'webp')}
-                      className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2"
+                      className={styles.select}
                     >
                       <option value="png">PNG</option>
                       <option value="jpeg">JPEG</option>
@@ -317,13 +344,13 @@ export default function PDFConverterPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">
+                    <label className={styles.fieldLabel}>
                       图片质量
                     </label>
                     <select
                       value={imageQuality}
                       onChange={(e) => setImageQuality(e.target.value as 'high' | 'medium' | 'low')}
-                      className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2"
+                      className={styles.select}
                     >
                       <option value="high">高质量</option>
                       <option value="medium">中等质量</option>
@@ -333,11 +360,15 @@ export default function PDFConverterPage() {
                 </>
               )}
             </div>
-          </div>
+          </section>
 
           {/* 文件上传 - 在PDF转文本时隐藏 */}
           {conversionType !== 'pdf_to_text' && (
-            <div className="bg-gray-800 rounded-lg p-6">
+            <section className={styles.card}>
+              <div className="mb-5">
+                <h3 className={styles.sectionTitle}>上传 PDF 文件</h3>
+                <p className={styles.sectionDescription}>支持批量上传，导出结果会按页拆分。</p>
+              </div>
               <FileUpload
                 accept=".pdf"
                 maxSize={100 * 1024 * 1024}
@@ -348,12 +379,12 @@ export default function PDFConverterPage() {
                 subtitle="支持拖拽上传，最大100MB"
                 buttonText="选择文件"
               />
-            </div>
+            </section>
           )}
 
           {/* 错误提示 */}
           {error && (
-            <div className="bg-red-600 text-white p-4 rounded-lg">
+            <div className={styles.alert}>
               {error}
             </div>
           )}
@@ -371,7 +402,7 @@ export default function PDFConverterPage() {
 
           {/* 操作按钮 */}
           {files.length > 0 && !isConverting && conversionType !== 'pdf_to_text' && (
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-3">
               <ActionButton
                 onClick={startConversion}
                 loading={isConverting}
@@ -390,15 +421,23 @@ export default function PDFConverterPage() {
 
           {/* 转换结果 */}
           {results.length > 0 && (
-            <div ref={resultsRef} className="bg-gray-800 rounded-lg p-6">
-              <h3 className="text-lg font-semibold mb-4">转换结果</h3>
+            <section ref={resultsRef} className={styles.card}>
+              <div className="mb-5 flex items-center justify-between gap-4">
+                <div>
+                  <h3 className={styles.sectionTitle}>转换结果</h3>
+                  <p className={styles.sectionDescription}>按页输出的文件会统一列在这里。</p>
+                </div>
+                <div className="rounded-full border border-[var(--color-border)] px-3 py-1 text-xs text-secondary">
+                  {results.length} 个文件
+                </div>
+              </div>
               <div className="space-y-3">
                 {results.map((result, index) => (
-                  <div key={index} className="flex items-center justify-between bg-gray-700 rounded-lg p-3">
+                  <div key={index} className={styles.resultItem}>
                     <div className="flex items-center gap-3">
                       <div>
-                        <p className="text-sm font-medium">{result.filename}</p>
-                        <p className="text-xs text-gray-400">{formatFileSize(result.size)}</p>
+                        <p className="text-sm font-medium text-primary">{result.filename}</p>
+                        <p className="text-xs text-secondary">{formatFileSize(result.size)}</p>
                       </div>
                     </div>
                     <div className="flex gap-2">
@@ -414,7 +453,7 @@ export default function PDFConverterPage() {
                   </div>
                 ))}
               </div>
-            </div>
+            </section>
           )}
         </div>
       </div>

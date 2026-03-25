@@ -25,6 +25,22 @@ interface CompressionSettings {
   removeAnnotations: boolean;
 }
 
+const styles = {
+  page: 'min-h-screen bg-main text-primary',
+  shell: 'mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-6 md:px-6',
+  content: 'mx-auto w-full max-w-5xl space-y-6',
+  card: 'card p-6',
+  sectionTitle: 'text-lg font-semibold tracking-tight text-primary',
+  sectionDescription: 'mt-1 text-sm text-secondary',
+  fieldLabel: 'mb-2 block text-sm font-medium text-primary',
+  select: 'search-input w-full appearance-none px-3 py-2.5 pl-3',
+  checkboxRow: 'flex items-start gap-3 rounded-lg border border-[var(--color-border)] bg-block px-4 py-3',
+  checkbox: 'mt-0.5 h-4 w-4 rounded border-[var(--color-border)] bg-transparent accent-[rgb(var(--color-primary))]',
+  alert: 'rounded-xl border border-[rgba(var(--color-error),0.24)] bg-[rgba(var(--color-error),0.08)] px-4 py-3 text-sm text-[rgb(var(--color-error))]',
+  resultItem: 'rounded-xl border border-[var(--color-border)] bg-block p-4',
+  metricBox: 'rounded-lg border border-[var(--color-border)] bg-[rgba(var(--color-bg-main),0.35)] px-3 py-2',
+};
+
 export default function PDFCompressorPage() {
   const { t } = useLanguage();
   const [files, setFiles] = useState<File[]>([]);
@@ -65,7 +81,7 @@ export default function PDFCompressorPage() {
     };
 
     loadPDFJS();
-  }, [isClient]);
+  }, [isClient, t]);
 
   const handleFileSelect = useCallback((selectedFiles: File[]) => {
     setFiles(selectedFiles);
@@ -181,7 +197,7 @@ export default function PDFCompressorPage() {
     }
   };
 
-  const startCompression = useCallback(async () => {
+  const startCompression = async () => {
     if (files.length === 0) {
       setError(t('tools.pdf_compressor.errors.no_file'));
       return;
@@ -245,7 +261,7 @@ export default function PDFCompressorPage() {
     } finally {
       setIsCompressing(false);
     }
-  }, [files, settings, t, pdfjsLib]);
+  };
 
   const downloadResult = useCallback((result: CompressionResult) => {
     const link = document.createElement('a');
@@ -276,38 +292,42 @@ export default function PDFCompressorPage() {
   // 如果不在客户端，显示加载状态
   if (!isClient) {
     return (
-      <div className="min-h-screen bg-gray-900 text-gray-100 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-main text-primary">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
-          <p>加载中...</p>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-2 border-[rgba(var(--color-text-secondary),0.25)] border-r-[rgb(var(--color-primary))]" />
+          <p className="text-sm text-secondary">加载中...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100">
-      <ToolHeader 
-        toolCode="pdf_compressor"
-        title={t('tools.pdf_compressor.title')}
-        description={t('tools.pdf_compressor.description')}
-        icon={faCompress}
-      />
-      
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto space-y-6">
+    <div className={styles.page}>
+      <div className={styles.shell}>
+        <ToolHeader 
+          toolCode="pdf_compressor"
+          title={t('tools.pdf_compressor.title')}
+          description={t('tools.pdf_compressor.description')}
+          icon={faCompress}
+        />
+        
+        <div className={styles.content}>
           {/* 压缩设置 */}
-          <div className="bg-gray-800 rounded-lg p-6">
-            <h3 className="text-lg font-semibold mb-4">{t('tools.pdf_compressor.compression_settings.title')}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <section className={styles.card}>
+            <div className="mb-5">
+              <h3 className={styles.sectionTitle}>{t('tools.pdf_compressor.compression_settings.title')}</h3>
+              <p className={styles.sectionDescription}>使用统一的输出质量和优化开关控制压缩结果。</p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,220px)_minmax(0,1fr)]">
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label className={styles.fieldLabel}>
                   {t('tools.pdf_compressor.compression_settings.quality')}
                 </label>
                 <select
                   value={settings.quality}
                   onChange={(e) => setSettings(prev => ({ ...prev, quality: e.target.value as 'high' | 'medium' | 'low' }))}
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2"
+                  className={styles.select}
                 >
                   <option value="high">{t('tools.pdf_compressor.compression_settings.quality_high')}</option>
                   <option value="medium">{t('tools.pdf_compressor.compression_settings.quality_medium')}</option>
@@ -315,51 +335,58 @@ export default function PDFCompressorPage() {
                 </select>
               </div>
               
-              <div className="space-y-3">
-                <div className="flex items-center">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className={styles.checkboxRow}>
                   <input
                     type="checkbox"
                     id="imageCompression"
                     checked={settings.imageCompression}
                     onChange={(e) => setSettings(prev => ({ ...prev, imageCompression: e.target.checked }))}
-                    className="mr-2"
+                    className={styles.checkbox}
                   />
-                  <label htmlFor="imageCompression" className="text-sm">
-                    {t('tools.pdf_compressor.compression_settings.image_compression')}
+                  <label htmlFor="imageCompression" className="flex-1 text-sm text-primary">
+                    <span className="block font-medium">{t('tools.pdf_compressor.compression_settings.image_compression')}</span>
+                    <span className="mt-1 block text-xs text-secondary">通过页面重采样降低图片体积。</span>
                   </label>
                 </div>
                 
-                <div className="flex items-center">
+                <div className={styles.checkboxRow}>
                   <input
                     type="checkbox"
                     id="fontSubsetting"
                     checked={settings.fontSubsetting}
                     onChange={(e) => setSettings(prev => ({ ...prev, fontSubsetting: e.target.checked }))}
-                    className="mr-2"
+                    className={styles.checkbox}
                   />
-                  <label htmlFor="fontSubsetting" className="text-sm">
-                    {t('tools.pdf_compressor.compression_settings.font_subsetting')}
+                  <label htmlFor="fontSubsetting" className="flex-1 text-sm text-primary">
+                    <span className="block font-medium">{t('tools.pdf_compressor.compression_settings.font_subsetting')}</span>
+                    <span className="mt-1 block text-xs text-secondary">保留必要字体资源，减少冗余嵌入。</span>
                   </label>
                 </div>
                 
-                <div className="flex items-center">
+                <div className={styles.checkboxRow}>
                   <input
                     type="checkbox"
                     id="metadataRemoval"
                     checked={settings.metadataRemoval}
                     onChange={(e) => setSettings(prev => ({ ...prev, metadataRemoval: e.target.checked }))}
-                    className="mr-2"
+                    className={styles.checkbox}
                   />
-                  <label htmlFor="metadataRemoval" className="text-sm">
-                    {t('tools.pdf_compressor.compression_settings.metadata_removal')}
+                  <label htmlFor="metadataRemoval" className="flex-1 text-sm text-primary">
+                    <span className="block font-medium">{t('tools.pdf_compressor.compression_settings.metadata_removal')}</span>
+                    <span className="mt-1 block text-xs text-secondary">移除文档元信息，进一步压缩输出。</span>
                   </label>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
 
           {/* 文件上传 */}
-          <div className="bg-gray-800 rounded-lg p-6">
+          <section className={styles.card}>
+            <div className="mb-5">
+              <h3 className={styles.sectionTitle}>{t('tools.pdf_compressor.upload_area.title')}</h3>
+              <p className={styles.sectionDescription}>{t('tools.pdf_compressor.upload_area.subtitle')}</p>
+            </div>
             <FileUpload
               accept=".pdf"
               maxSize={100 * 1024 * 1024}
@@ -370,11 +397,11 @@ export default function PDFCompressorPage() {
               subtitle={t('tools.pdf_compressor.upload_area.subtitle')}
               buttonText={t('tools.pdf_compressor.upload_area.button')}
             />
-          </div>
+          </section>
 
           {/* 错误提示 */}
           {error && (
-            <div className="bg-red-600 text-white p-4 rounded-lg">
+            <div className={styles.alert}>
               {error}
             </div>
           )}
@@ -392,7 +419,7 @@ export default function PDFCompressorPage() {
 
           {/* 操作按钮 */}
           {files.length > 0 && !isCompressing && (
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-3">
               <ActionButton
                 onClick={startCompression}
                 loading={isCompressing}
@@ -411,22 +438,34 @@ export default function PDFCompressorPage() {
 
           {/* 压缩结果 */}
           {results.length > 0 && (
-            <div ref={resultsRef} className="bg-gray-800 rounded-lg p-6">
-              <h3 className="text-lg font-semibold mb-4">{t('tools.pdf_compressor.results.title')}</h3>
+            <section ref={resultsRef} className={styles.card}>
+              <div className="mb-5 flex items-center justify-between gap-4">
+                <div>
+                  <h3 className={styles.sectionTitle}>{t('tools.pdf_compressor.results.title')}</h3>
+                  <p className={styles.sectionDescription}>查看每个输出文件的压缩体积和变化比例。</p>
+                </div>
+                <div className="rounded-full border border-[var(--color-border)] px-3 py-1 text-xs text-secondary">
+                  {results.length} 个结果
+                </div>
+              </div>
+
               <div className="space-y-3">
                 {results.map((result, index) => (
-                  <div key={index} className="bg-gray-700 rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <p className="text-sm font-medium">{result.filename}</p>
-                        <p className="text-xs text-gray-400">
-                          {t('tools.pdf_compressor.results.original_size')}: {formatFileSize(result.originalSize)} | 
+                  <div key={index} className={styles.resultItem}>
+                    <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                      <div className="space-y-1">
+                        <p className="text-sm font-semibold text-primary">{result.filename}</p>
+                        <p className="text-xs text-secondary">
+                          {t('tools.pdf_compressor.results.original_size')}: {formatFileSize(result.originalSize)}
+                        </p>
+                        <p className="text-xs text-secondary">
                           {t('tools.pdf_compressor.results.compressed_size')}: {formatFileSize(result.compressedSize)}
                         </p>
                       </div>
-                      <div className="text-right">
-                        <p className={`text-sm font-bold ${
-                          result.compressionRatio > 0 ? 'text-green-400' : 'text-red-400'
+                      <div className={`${styles.metricBox} text-left md:text-right`}>
+                        <p className="mb-1 text-[11px] uppercase tracking-[0.18em] text-secondary">压缩比</p>
+                        <p className={`text-sm font-semibold ${
+                          result.compressionRatio > 0 ? 'text-success' : 'text-error'
                         }`}>
                           {result.compressionRatio > 0 ? '-' : '+'}{Math.abs(result.compressionRatio).toFixed(1)}%
                         </p>
@@ -445,7 +484,7 @@ export default function PDFCompressorPage() {
                   </div>
                 ))}
               </div>
-            </div>
+            </section>
           )}
         </div>
       </div>

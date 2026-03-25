@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useId, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudUploadAlt, faFile, faTimes } from '@fortawesome/free-solid-svg-icons';
 
@@ -29,6 +29,7 @@ export default function FileUpload({
 }: FileUploadProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const inputId = useId();
 
   const validateFiles = useCallback((files: FileList): File[] => {
     const validFiles: File[] = [];
@@ -112,32 +113,32 @@ export default function FileUpload({
       {/* 文件上传区域 */}
       <div
         className={`
-          border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer
+          rounded-xl border border-dashed p-8 text-center transition-all cursor-pointer
           ${isDragOver 
-            ? 'border-purple-400 bg-purple-50 dark:bg-purple-900/20' 
-            : 'border-purple-500 hover:border-purple-400'
+            ? 'border-[rgba(var(--color-text-primary),0.4)] bg-[rgba(var(--color-bg-secondary),0.75)]'
+            : 'border-[rgba(var(--color-text-secondary),0.25)] bg-[rgba(var(--color-block),0.45)] hover:border-[rgba(var(--color-text-secondary),0.45)] hover:bg-[rgba(var(--color-bg-secondary),0.35)]'
           }
         `}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        onClick={() => document.getElementById('file-upload')?.click()}
+        onClick={() => document.getElementById(inputId)?.click()}
       >
         <FontAwesomeIcon 
           icon={faCloudUploadAlt} 
-          className="text-4xl text-purple-500 mb-4" 
+          className="mb-4 text-3xl text-[rgb(var(--color-text-secondary))]" 
         />
-        <h3 className="text-xl font-semibold mb-2 text-gray-100">
+        <h3 className="mb-2 text-xl font-semibold tracking-tight text-primary">
           {title}
         </h3>
-        <p className="text-gray-400 mb-4">
+        <p className="mb-4 text-sm text-secondary">
           {subtitle}
         </p>
-        <button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition-colors">
+        <button type="button" className="btn-secondary px-6 py-2">
           {buttonText}
         </button>
         <input
-          id="file-upload"
+          id={inputId}
           type="file"
           accept={accept}
           multiple={multiple}
@@ -149,22 +150,25 @@ export default function FileUpload({
       {/* 已选择的文件列表 */}
       {selectedFiles.length > 0 && (
         <div className="space-y-2">
-          <h4 className="text-sm font-medium text-gray-300">已选择的文件：</h4>
+          <h4 className="text-sm font-medium text-secondary">已选择的文件</h4>
           {selectedFiles.map((file, index) => (
             <div 
               key={`${file.name}-${index}`}
-              className="flex items-center justify-between bg-gray-800 rounded-lg p-3"
+              className="flex items-center justify-between rounded-lg border border-[var(--color-border)] bg-block px-4 py-3"
             >
               <div className="flex items-center gap-3">
-                <FontAwesomeIcon icon={faFile} className="text-purple-500" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--color-border)] bg-[rgba(var(--color-bg-main),0.5)] text-secondary">
+                  <FontAwesomeIcon icon={faFile} />
+                </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-100">{file.name}</p>
-                  <p className="text-xs text-gray-400">{formatFileSize(file.size)}</p>
+                  <p className="text-sm font-medium text-primary">{file.name}</p>
+                  <p className="text-xs text-secondary">{formatFileSize(file.size)}</p>
                 </div>
               </div>
               <button
+                type="button"
                 onClick={() => removeFile(index)}
-                className="text-gray-400 hover:text-red-400 transition-colors"
+                className="rounded-md border border-transparent px-2 py-1 text-secondary transition-colors hover:border-[rgba(var(--color-error),0.2)] hover:bg-[rgba(var(--color-error),0.08)] hover:text-[rgb(var(--color-error))]"
               >
                 <FontAwesomeIcon icon={faTimes} />
               </button>

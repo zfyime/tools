@@ -27,6 +27,28 @@ interface SplitRange {
 
 type OperationMode = 'merge' | 'split';
 
+const styles = {
+  page: 'min-h-screen bg-main text-primary',
+  shell: 'mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-6 md:px-6',
+  content: 'mx-auto w-full max-w-5xl space-y-6',
+  card: 'card p-6',
+  sectionTitle: 'text-lg font-semibold tracking-tight text-primary',
+  sectionDescription: 'mt-1 text-sm text-secondary',
+  fieldLabel: 'mb-2 block text-sm font-medium text-primary',
+  input: 'search-input w-full px-3 py-2.5 pl-3',
+  optionGrid: 'grid grid-cols-1 gap-3 md:grid-cols-2',
+  splitGrid: 'grid grid-cols-1 gap-3 md:grid-cols-3',
+  optionButton: (active: boolean) =>
+    `rounded-xl border px-4 py-4 text-left transition-all ${
+      active
+        ? 'border-[rgba(var(--color-text-primary),0.35)] bg-[rgb(var(--color-bg-secondary))] text-primary shadow-sm'
+        : 'border-[var(--color-border)] bg-transparent text-secondary hover:border-[rgba(var(--color-text-secondary),0.35)] hover:bg-[rgba(var(--color-bg-secondary),0.35)]'
+    }`,
+  subPanel: 'rounded-xl border border-[var(--color-border)] bg-block p-4',
+  fileItem: 'flex flex-col gap-3 rounded-xl border border-[var(--color-border)] bg-block p-4 sm:flex-row sm:items-center sm:justify-between',
+  alert: 'rounded-xl border border-[rgba(var(--color-error),0.24)] bg-[rgba(var(--color-error),0.08)] px-4 py-3 text-sm text-[rgb(var(--color-error))]',
+};
+
 export default function PDFManagerPage() {
   const { t } = useLanguage();
   const [files, setFiles] = useState<PDFFile[]>([]);
@@ -97,6 +119,7 @@ export default function PDFManagerPage() {
   }, []);
 
   const removeFile = useCallback((index: number) => {
+    URL.revokeObjectURL(files[index].url);
     const newFiles = files.filter((_, i) => i !== index);
     setFiles(newFiles);
   }, [files]);
@@ -152,6 +175,8 @@ export default function PDFManagerPage() {
 
   // 重置所有状态到初始值
   const resetState = useCallback(() => {
+    files.forEach(file => URL.revokeObjectURL(file.url));
+    results.forEach(result => URL.revokeObjectURL(result.url));
     setFiles([]);
     setResults([]);
     setError(null);
@@ -161,7 +186,7 @@ export default function PDFManagerPage() {
     setOutputName('merged_document.pdf');
     setSplitMethod('single_pages');
     setPartsCount(2);
-  }, []);
+  }, [files, results]);
 
   // 切换操作模式时重置状态
   const handleOperationModeChange = useCallback((mode: OperationMode) => {
@@ -169,7 +194,7 @@ export default function PDFManagerPage() {
     resetState();
   }, [resetState]);
 
-  const startOperation = useCallback(async () => {
+  const startOperation = async () => {
     if (!pdfLib) {
       setError('PDF处理库未加载');
       return;
@@ -220,7 +245,7 @@ export default function PDFManagerPage() {
     } finally {
       setIsProcessing(false);
     }
-  }, [files, operationMode, splitMethod, startPage, endPage, customRanges, partsCount, outputName, t, pdfLib]);
+  };
 
   const performMerge = useCallback(async () => {
     if (files.length < 2) {
@@ -394,48 +419,60 @@ export default function PDFManagerPage() {
 
   const totalSize = files.reduce((sum, file) => sum + file.size, 0);
 
+  if (!isClient) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-main text-primary">
+        <div className="text-center">
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-2 border-[rgba(var(--color-text-secondary),0.25)] border-r-[rgb(var(--color-primary))]" />
+          <p className="text-sm text-secondary">加载中...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100">
-      <ToolHeader 
-        toolCode="pdf_manager"
-        title={t('tools.pdf_manager.title')}
-        description={t('tools.pdf_manager.description')}
-        icon={faObjectGroup}
-      />
-      
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto space-y-6">
+    <div className={styles.page}>
+      <div className={styles.shell}>
+        <ToolHeader 
+          toolCode="pdf_manager"
+          title={t('tools.pdf_manager.title')}
+          description={t('tools.pdf_manager.description')}
+          icon={faObjectGroup}
+        />
+        
+        <div className={styles.content}>
           {/* 操作模式选择 */}
-          <div className="bg-gray-800 rounded-lg p-6">
-            <h3 className="text-lg font-semibold mb-4">{t('tools.pdf_manager.operation_mode.title')}</h3>
-                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <section className={styles.card}>
+            <div className="mb-5">
+              <h3 className={styles.sectionTitle}>{t('tools.pdf_manager.operation_mode.title')}</h3>
+              <p className={styles.sectionDescription}>先确定是合并多个 PDF，还是按规则拆分单个 PDF。</p>
+            </div>
+            <div className={styles.optionGrid}>
                <button
                  onClick={() => handleOperationModeChange('merge')}
-                 className={`p-4 rounded-lg border-2 transition-all ${
-                   operationMode === 'merge'
-                     ? 'border-indigo-500 bg-indigo-500/20 text-indigo-300'
-                     : 'border-gray-600 bg-gray-700 hover:border-gray-500'
-                 }`}
+                 className={styles.optionButton(operationMode === 'merge')}
                >
-                 <FontAwesomeIcon icon={faObjectGroup} className="text-2xl mb-2" />
-                 <div className="font-medium">{t('tools.pdf_manager.operation_mode.merge')}</div>
+                 <FontAwesomeIcon icon={faObjectGroup} className="mb-3 text-lg" />
+                 <div className="font-medium text-current">{t('tools.pdf_manager.operation_mode.merge')}</div>
+                 <div className="mt-1 text-sm text-secondary">按当前顺序合并多个文件并输出一个 PDF。</div>
                </button>
                <button
                  onClick={() => handleOperationModeChange('split')}
-                 className={`p-4 rounded-lg border-2 transition-all ${
-                   operationMode === 'split'
-                     ? 'border-indigo-500 bg-indigo-500/20 text-indigo-300'
-                     : 'border-gray-600 bg-gray-700 hover:border-gray-500'
-                 }`}
+                 className={styles.optionButton(operationMode === 'split')}
                >
-                 <FontAwesomeIcon icon={faScissors} className="text-2xl mb-2" />
-                 <div className="font-medium">{t('tools.pdf_manager.operation_mode.split')}</div>
+                 <FontAwesomeIcon icon={faScissors} className="mb-3 text-lg" />
+                 <div className="font-medium text-current">{t('tools.pdf_manager.operation_mode.split')}</div>
+                 <div className="mt-1 text-sm text-secondary">按页、范围或等分规则拆分输出多个文件。</div>
                </button>
              </div>
-          </div>
+          </section>
 
           {/* 文件上传 */}
-          <div className="bg-gray-800 rounded-lg p-6">
+          <section className={styles.card}>
+            <div className="mb-5">
+              <h3 className={styles.sectionTitle}>{t('tools.pdf_manager.upload_area.title')}</h3>
+              <p className={styles.sectionDescription}>{t('tools.pdf_manager.upload_area.subtitle')}</p>
+            </div>
             <FileUpload
               accept=".pdf"
               maxSize={operationMode === 'merge' ? 500 * 1024 * 1024 : 100 * 1024 * 1024}
@@ -446,21 +483,21 @@ export default function PDFManagerPage() {
               subtitle={t('tools.pdf_manager.upload_area.subtitle')}
               buttonText={t('tools.pdf_manager.upload_area.button')}
             />
-          </div>
+          </section>
 
           {/* 错误提示 */}
           {error && (
-            <div className="bg-red-600 text-white p-4 rounded-lg">
+            <div className={styles.alert}>
               {error}
             </div>
           )}
 
           {/* 文件列表 */}
           {files.length > 0 && (
-            <div className="bg-gray-800 rounded-lg p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">{t('tools.pdf_manager.file_list.title')}</h3>
-                <div className="text-sm text-gray-400">
+            <section className={styles.card}>
+              <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <h3 className={styles.sectionTitle}>{t('tools.pdf_manager.file_list.title')}</h3>
+                <div className="text-sm text-secondary">
                   {t('tools.pdf_manager.file_list.total_size')}: {formatFileSize(totalSize)}
                 </div>
               </div>
@@ -469,19 +506,22 @@ export default function PDFManagerPage() {
                 {files.map((file, index) => (
                   <div 
                     key={index}
-                    className="flex items-center justify-between bg-gray-700 rounded-lg p-3"
+                    className={styles.fileItem}
                   >
                     <div className="flex items-center gap-3">
-                      <FontAwesomeIcon icon={faGripVertical} className="text-gray-400 cursor-move" />
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--color-border)] bg-[rgba(var(--color-bg-main),0.45)] text-secondary">
+                        <FontAwesomeIcon icon={faGripVertical} className="cursor-move" />
+                      </div>
                       <div>
-                        <p className="text-sm font-medium">{file.file.name}</p>
-                        <p className="text-xs text-gray-400">{formatFileSize(file.size)}</p>
+                        <p className="text-sm font-medium text-primary">{file.file.name}</p>
+                        <p className="text-xs text-secondary">{formatFileSize(file.size)}</p>
                       </div>
                     </div>
                     <div className="flex gap-2">
                       <button
+                        type="button"
                         onClick={() => removeFile(index)}
-                        className="text-gray-400 hover:text-red-400 transition-colors"
+                        className="rounded-md border border-transparent px-2 py-1 text-secondary transition-colors hover:border-[rgba(var(--color-error),0.2)] hover:bg-[rgba(var(--color-error),0.08)] hover:text-[rgb(var(--color-error))]"
                       >
                         <FontAwesomeIcon icon={faTrash} />
                       </button>
@@ -490,28 +530,31 @@ export default function PDFManagerPage() {
                 ))}
               </div>
               
-              <p className="text-xs text-gray-400 mt-2">
+              <p className="mt-3 text-xs text-secondary">
                 {t('tools.pdf_manager.file_list.drag_hint')}
               </p>
-            </div>
+            </section>
           )}
 
           {/* 操作设置 */}
           {files.length > 0 && (
-            <div className="bg-gray-800 rounded-lg p-6">
+            <section className={styles.card}>
               {operationMode === 'merge' && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">{t('tools.pdf_manager.merge_mode.title')}</h3>
+                  <div className="mb-5">
+                    <h3 className={styles.sectionTitle}>{t('tools.pdf_manager.merge_mode.title')}</h3>
+                    <p className={styles.sectionDescription}>设置输出文件名后，按当前列表顺序进行合并。</p>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium mb-2">
+                      <label className={styles.fieldLabel}>
                         {t('tools.pdf_manager.merge_mode.output_name')}
                       </label>
                       <input
                         type="text"
                         value={outputName}
                         onChange={(e) => setOutputName(e.target.value)}
-                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2"
+                        className={styles.input}
                         placeholder="merged_document.pdf"
                       />
                     </div>
@@ -521,23 +564,22 @@ export default function PDFManagerPage() {
 
               {operationMode === 'split' && (
                 <div className="space-y-6">
-                  <h3 className="text-lg font-semibold">{t('tools.pdf_manager.split_mode.title')}</h3>
+                  <div>
+                    <h3 className={styles.sectionTitle}>{t('tools.pdf_manager.split_mode.title')}</h3>
+                    <p className={styles.sectionDescription}>选择拆分规则，再配置页码范围或份数。</p>
+                  </div>
                   
                   {/* 分割方式选择 */}
                   <div>
-                    <label className="block text-sm font-medium mb-2">
+                    <label className={styles.fieldLabel}>
                       {t('tools.pdf_manager.split_mode.split_method')}
                     </label>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className={styles.splitGrid}>
                       {(['single_pages', 'custom_ranges', 'equal_parts'] as const).map((method) => (
                         <button
                           key={method}
                           onClick={() => setSplitMethod(method)}
-                          className={`p-3 rounded-lg border-2 transition-all ${
-                            splitMethod === method
-                              ? 'border-indigo-500 bg-indigo-500/20 text-indigo-300'
-                              : 'border-gray-600 bg-gray-700 hover:border-gray-500'
-                          }`}
+                          className={styles.optionButton(splitMethod === method)}
                         >
                           {t(`tools.pdf_manager.split_methods.${method}`)}
                         </button>
@@ -547,8 +589,8 @@ export default function PDFManagerPage() {
 
                   {/* 单页分割设置 */}
                   {splitMethod === 'single_pages' && (
-                    <div className="bg-gray-700 rounded-lg p-4">
-                      <p className="text-sm text-gray-300">
+                    <div className={styles.subPanel}>
+                      <p className="text-sm text-secondary">
                         {t('tools.pdf_manager.split_methods.single_pages')} - {t('tools.pdf_manager.split_methods.single_pages_description')}
                       </p>
                     </div>
@@ -557,26 +599,27 @@ export default function PDFManagerPage() {
                   {/* 自定义范围设置 */}
                   {splitMethod === 'custom_ranges' && (
                     <div className="space-y-4">
-                      <div className="bg-gray-700 rounded-lg p-4">
-                        <label className="block text-sm font-medium mb-2">
+                      <div className={styles.subPanel}>
+                        <label className={styles.fieldLabel}>
                           {t('tools.pdf_manager.custom_ranges.title')}
                         </label>
-                        <div className="flex gap-2">
+                        <div className="flex flex-col gap-2 sm:flex-row">
                           <input
                             type="text"
                             value={customRangeInput}
                             onChange={(e) => setCustomRangeInput(e.target.value)}
-                            className="flex-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2"
+                            className={`flex-1 ${styles.input}`}
                             placeholder={t('tools.pdf_manager.custom_ranges.placeholder')}
                           />
                           <button
+                            type="button"
                             onClick={addCustomRange}
-                            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
+                            className="btn-secondary px-4 py-2"
                           >
                             {t('tools.pdf_manager.custom_ranges.add_range')}
                           </button>
                         </div>
-                        <p className="text-xs text-gray-400 mt-2">
+                        <p className="mt-2 text-xs text-secondary">
                           {t('tools.pdf_manager.custom_ranges.range_format')}
                         </p>
                       </div>
@@ -584,16 +627,17 @@ export default function PDFManagerPage() {
                       {customRanges.length > 0 && (
                         <div className="space-y-2">
                           {customRanges.map((range) => (
-                            <div key={range.id} className="flex items-center justify-between bg-gray-700 rounded-lg p-3">
-                                                             <span className="text-sm">
-                                 {range.start === range.end 
-                                   ? t('tools.pdf_manager.custom_ranges.single_page').replace('{page}', range.start.toString())
-                                   : t('tools.pdf_manager.custom_ranges.page_range').replace('{start}', range.start.toString()).replace('{end}', range.end.toString())
-                                 }
-                               </span>
+                            <div key={range.id} className="flex items-center justify-between rounded-lg border border-[var(--color-border)] bg-block px-4 py-3">
+                              <span className="text-sm text-primary">
+                                {range.start === range.end
+                                  ? t('tools.pdf_manager.custom_ranges.single_page').replace('{page}', range.start.toString())
+                                  : t('tools.pdf_manager.custom_ranges.page_range').replace('{start}', range.start.toString()).replace('{end}', range.end.toString())
+                                }
+                              </span>
                               <button
+                                type="button"
                                 onClick={() => removeCustomRange(range.id)}
-                                className="text-red-400 hover:text-red-300 transition-colors"
+                                className="rounded-md border border-transparent px-2 py-1 text-secondary transition-colors hover:border-[rgba(var(--color-error),0.2)] hover:bg-[rgba(var(--color-error),0.08)] hover:text-[rgb(var(--color-error))]"
                               >
                                 <FontAwesomeIcon icon={faTrash} />
                               </button>
@@ -606,8 +650,8 @@ export default function PDFManagerPage() {
 
                   {/* 等分分割设置 */}
                   {splitMethod === 'equal_parts' && (
-                    <div className="bg-gray-700 rounded-lg p-4">
-                      <label className="block text-sm font-medium mb-2">
+                    <div className={styles.subPanel}>
+                      <label className={styles.fieldLabel}>
                         {t('tools.pdf_manager.equal_parts.parts_count')}
                       </label>
                       <input
@@ -615,7 +659,7 @@ export default function PDFManagerPage() {
                         min="2"
                         value={partsCount}
                         onChange={(e) => setPartsCount(parseInt(e.target.value) || 2)}
-                        className="w-full bg-gray-600 border border-gray-500 rounded-lg px-3 py-2"
+                        className={styles.input}
                       />
                     </div>
                   )}
@@ -623,7 +667,7 @@ export default function PDFManagerPage() {
               )}
 
               
-            </div>
+            </section>
           )}
 
           {/* 处理进度 */}
@@ -639,7 +683,7 @@ export default function PDFManagerPage() {
 
           {/* 操作按钮 */}
           {files.length > 0 && !isProcessing && (
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-3">
               <ActionButton
                 onClick={startOperation}
                 loading={isProcessing}
@@ -658,20 +702,23 @@ export default function PDFManagerPage() {
 
           {/* 操作结果 */}
           {results.length > 0 && (
-            <div ref={resultsRef} className="bg-gray-800 rounded-lg p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">{t('tools.pdf_manager.results.title')}</h3>
-                <div className="text-sm text-gray-400">
+            <section ref={resultsRef} className={styles.card}>
+              <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h3 className={styles.sectionTitle}>{t('tools.pdf_manager.results.title')}</h3>
+                  <p className={styles.sectionDescription}>处理后的输出文件会统一列在这里。</p>
+                </div>
+                <div className="text-sm text-secondary">
                   {t('tools.pdf_manager.results.files_count')}: {results.length}
                 </div>
               </div>
               
               <div className="space-y-3">
                 {results.map((result, index) => (
-                  <div key={index} className="flex items-center justify-between bg-gray-700 rounded-lg p-3">
+                  <div key={index} className={styles.fileItem}>
                     <div>
-                      <p className="text-sm font-medium">{result.filename}</p>
-                      <p className="text-xs text-gray-400">{formatFileSize(result.size)}</p>
+                      <p className="text-sm font-medium text-primary">{result.filename}</p>
+                      <p className="text-xs text-secondary">{formatFileSize(result.size)}</p>
                     </div>
                     <ActionButton
                       onClick={() => downloadResult(result)}
@@ -686,7 +733,7 @@ export default function PDFManagerPage() {
               </div>
               
               {results.length > 1 && (
-                <div className="mt-4 pt-4 border-t border-gray-600">
+                <div className="mt-4 border-t border-[var(--color-border)] pt-4">
                   <ActionButton
                     onClick={downloadAllResults}
                     variant="primary"
@@ -696,7 +743,7 @@ export default function PDFManagerPage() {
                   </ActionButton>
                 </div>
               )}
-            </div>
+            </section>
           )}
         </div>
       </div>

@@ -25,18 +25,18 @@ export default function ActionButton({
   icon,
   className = ''
 }: ActionButtonProps) {
-  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2';
+  const baseClasses = 'inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-all focus:outline-none disabled:cursor-not-allowed disabled:opacity-50';
   
   const variantClasses = {
-    primary: 'bg-purple-600 hover:bg-purple-700 text-white focus:ring-purple-500 disabled:bg-gray-600 disabled:cursor-not-allowed',
-    secondary: 'bg-gray-700 hover:bg-gray-600 text-white border border-gray-600 focus:ring-gray-500 disabled:bg-gray-800 disabled:cursor-not-allowed',
-    danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500 disabled:bg-gray-600 disabled:cursor-not-allowed'
+    primary: 'btn-primary',
+    secondary: 'btn-secondary',
+    danger: 'rounded-md border border-[rgba(var(--color-error),0.32)] bg-[rgba(var(--color-error),0.12)] text-[rgb(var(--color-error))] shadow-sm transition-all hover:bg-[rgba(var(--color-error),0.18)] focus:ring-2 focus:ring-[rgba(var(--color-error),0.2)] focus:ring-offset-2 focus:ring-offset-[rgb(var(--color-bg-main))]'
   };
 
   const sizeClasses = {
     sm: 'px-3 py-1.5 text-sm',
     md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base'
+    lg: 'px-5 py-2.5 text-base'
   };
 
   const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
@@ -48,12 +48,12 @@ export default function ActionButton({
       className={classes}
     >
       {loading && (
-        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+        <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-r-transparent" />
       )}
       {icon && !loading && (
-        <FontAwesomeIcon icon={icon} className="mr-2" />
+        <FontAwesomeIcon icon={icon} className="text-[0.9em]" />
       )}
       {children}
     </button>
   );
-} 
+}
