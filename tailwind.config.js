@@ -15,6 +15,10 @@ module.exports = {
           '50%': { opacity: 0.3, transform: 'scale(1.05)' },
         },
       },
+      transitionTimingFunction: {
+        'smooth': 'cubic-bezier(0.32, 0.72, 0, 1)',
+        'spring': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+      },
     },
   },
   plugins: [],
