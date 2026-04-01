@@ -7,18 +7,16 @@ import { faLightbulb as farLightbulb } from '@fortawesome/free-regular-svg-icons
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState('light');
   const [mounted, setMounted] = useState(false);
   const { t } = useLanguage();
 
   // 组件挂载后执行
   useEffect(() => {
     setMounted(true);
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.setAttribute('data-theme', savedTheme);
-    }
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+    document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);
 
   // 切换主题

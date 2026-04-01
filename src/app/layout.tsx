@@ -49,7 +49,7 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
-                  var theme = localStorage.getItem('theme') || 'dark';
+                  var theme = localStorage.getItem('theme') || 'light';
                   var docEl = document.documentElement;
                   if (docEl.getAttribute('data-theme') !== theme) {
                     docEl.setAttribute('data-theme', theme);
