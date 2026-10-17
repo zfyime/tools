@@ -2,7 +2,7 @@ import {
   faCode, faExchangeAlt, faClock, faGlobe, faLink, faLock, 
   faImage, faCogs, faFileCode, faKey, faFont, 
   faCalendarAlt, faPalette, faEdit, faRuler, faNetworkWired,
-  faEraser, faCalculator, faFileAlt, faCube,faObjectGroup, faCompress
+  faEraser, faCalculator, faFileAlt, faCube,faObjectGroup, faCompress, faRobot
 } from '@fortawesome/free-solid-svg-icons';
 import { Tool } from '@/types/tools';
 
@@ -184,6 +184,13 @@ const tools: Tool[] = [
     icon: faKey,
     category: ['code'],
     keywords: ['密码', '随机密码', '密码生成', '口令', '强密码', 'password', 'random', 'generator', 'security', 'mima', 'mm', 'suiji']
+  },
+
+  {
+    code: 'ai_api_checker',
+    icon: faRobot,
+    category: ['common', 'network'],
+    keywords: ['ai', 'api', 'ai检测', 'api检测', '可用性检测', '接口检测', 'openai', 'chatgpt', 'claude', 'anthropic', 'gemini', '大模型', '模型列表', 'model', 'api check', 'ai api', 'aijc', 'apijc', 'kyx']
   },
 
   // PDF工具
