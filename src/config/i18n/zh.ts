@@ -34,6 +34,7 @@ export const zh = {
     cron_generator: tools.cron_generator.zh,
     icon_designer: tools.icon_designer.zh,
     password_generator: tools.password_generator.zh,
+    ai_api_checker: tools.ai_api_checker.zh,
 
     pdf_converter: tools.pdf_converter.zh,
     pdf_manager: tools.pdf_manager.zh,

@@ -41,7 +41,15 @@ const FILE_UPLOAD_API_PATHS = [
 const HIGH_RATE_LIMIT_API_PATHS = [
   '/api/ip',
   '/api/proxy',
+  '/api/ai-check',
   // 其他可以有较高频率限制的API
+];
+
+// 免于客户端令牌与反爬行为检测的API路径
+// /api/ai-check 是受限转发接口（请求头白名单 + 内网地址拦截），一次检测会产生多次请求，
+// 不应被通用反爬与黑名单机制误伤
+const BEHAVIOR_EXEMPT_API_PATHS = [
+  '/api/ai-check',
 ];
 
 // 请求频率限制存储（使用IP作为键）
@@ -126,7 +134,7 @@ function cleanupExpiredData() {
 /**
  * 检查请求频率限制
  */
-function checkRateLimit(ip: string, path: string): boolean {
+function checkRateLimit(ip: string, path: string, recordSuspicion: boolean = true): boolean {
   const now = Date.now();
   const userLimit = rateLimits.get(ip);
   
@@ -158,7 +166,9 @@ function checkRateLimit(ip: string, path: string): boolean {
   // 增加计数并检查是否超过限制
   userLimit.count++;
   if (userLimit.count > limit) {
-    recordSuspiciousActivity(ip, '请求频率过高');
+    if (recordSuspicion) {
+      recordSuspiciousActivity(ip, '请求频率过高');
+    }
     return false;
   }
   
@@ -272,27 +282,34 @@ export function middleware(request: NextRequest) {
   // 仅对API请求进行检查
   if (pathname.startsWith('/api/')) {
     // 获取客户端IP
-    const ip = request.headers.get('x-forwarded-for') || 
-               request.headers.get('x-real-ip') || 
+    const ip = request.headers.get('x-forwarded-for') ||
+               request.headers.get('x-real-ip') ||
                'unknown';
-    
+
+    // 该接口不走令牌与可疑行为检测，仅保留频率限制
+    const isBehaviorExempt = BEHAVIOR_EXEMPT_API_PATHS.some(apiPath => pathname.startsWith(apiPath));
+
     // 检查IP是否在黑名单中
-    if (ipBlacklist.has(ip)) {
+    if (!isBehaviorExempt && ipBlacklist.has(ip)) {
       // const blacklistInfo = ipBlacklist.get(ip);
       return NextResponse.json(
         { error: '您的请求已被暂时限制，请稍后再试' },
         { status: 403 }
       );
     }
-    
+
     // 检查请求频率限制
-    if (!checkRateLimit(ip, pathname)) {
+    if (!checkRateLimit(ip, pathname, !isBehaviorExempt)) {
       return NextResponse.json(
         { error: '请求频率过高，请稍后再试' },
         { status: 429 }
       );
     }
-    
+
+    if (isBehaviorExempt) {
+      return NextResponse.next();
+    }
+
     // 检查安全请求头
     if (!validateSecurityHeaders(request, ip)) {
       return NextResponse.json(
