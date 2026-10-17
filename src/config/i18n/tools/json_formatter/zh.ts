@@ -3,8 +3,6 @@ export const jsonFormatterZh = {
   description: 'JSON数据美化与验证工具',
   beautify: '美化',
   compress: '压缩',
-  expand_all: '全部展开',
-  collapse_all: '全部折叠',
   clear: '清空',
   load_example: '加载示例',
   history: '历史记录',
@@ -13,14 +11,9 @@ export const jsonFormatterZh = {
   input_json: '输入JSON',
   paste_json_here: '粘贴JSON到此处',
   jsonpath_query: 'JSONPath查询',
-  optional: '(可选)',
   enter_jsonpath: '输入JSONPath表达式，例如: $.store.book[0].title',
-  query_result: '查询结果',
   output: '格式化结果',
   copy: '复制',
-  large_json_warning: '大文件模式',
-  json_history: 'JSON历史记录',
-  history_empty: '暂无历史记录',
   remove_favorite: '取消收藏',
   add_favorite: '添加收藏',
   edit_title: '编辑标题',
@@ -36,7 +29,6 @@ export const jsonFormatterZh = {
   fold_mode: '折叠模式',
   reformat: '重新格式化',
   processing: '处理中...',
-  cancel_processing: '取消处理',
   processing_large_json: '处理大型JSON中...',
   processing_large_json_message: '正在处理大型JSON...\n这可能需要几秒钟',
   parsing_json: '正在解析JSON...',
@@ -61,7 +53,15 @@ export const jsonFormatterZh = {
   guide_8: '提供字符串转义和反转义功能，处理特殊字符',
   remove_slash: '移除斜杠',
   escape_string: '字符串转义',
-  unescape_string: '字符串反转义'
+  unescape_string: '字符串反转义',
+  untitled: '未命名',
+  path_not_found: "路径 '{path}' 不存在",
+  query_error: '查询错误: {message}',
+  json_parse_error_prefix: 'JSON 解析错误',
+  error_position: '（第 {line} 行，第 {column} 列附近）',
+  lenient_parsed: '✓ 已按宽松模式解析（输入为非标准 JSON）',
+  no_change: '未检测到需要处理的内容',
+  large_json_text_mode: 'JSON 较大，已切换为纯文本显示'
 };
 
 export default jsonFormatterZh; 

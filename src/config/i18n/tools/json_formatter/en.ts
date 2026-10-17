@@ -3,8 +3,6 @@ export const jsonFormatterEn = {
   description: 'JSON data beautify and validation tool',
   beautify: 'Beautify',
   compress: 'Compress',
-  expand_all: 'Expand All',
-  collapse_all: 'Collapse All',
   clear: 'Clear',
   load_example: 'Load Example',
   history: 'History',
@@ -13,14 +11,9 @@ export const jsonFormatterEn = {
   input_json: 'Input JSON',
   paste_json_here: 'Paste JSON here',
   jsonpath_query: 'JSONPath Query',
-  optional: '(Optional)',
   enter_jsonpath: 'Enter JSONPath expression, e.g.: $.store.book[0].title',
-  query_result: 'Query Result',
   output: 'Formatted Result',
   copy: 'Copy',
-  large_json_warning: 'Large File Mode',
-  json_history: 'JSON History',
-  history_empty: 'No history records',
   remove_favorite: 'Remove Favorite',
   add_favorite: 'Add Favorite',
   edit_title: 'Edit Title',
@@ -36,7 +29,6 @@ export const jsonFormatterEn = {
   fold_mode: 'Fold Mode',
   reformat: 'Reformat',
   processing: 'Processing...',
-  cancel_processing: 'Cancel Processing',
   processing_large_json: 'Processing large JSON...',
   processing_large_json_message: 'Processing large JSON...\nThis may take a few seconds',
   parsing_json: 'Parsing JSON...',
@@ -61,7 +53,15 @@ export const jsonFormatterEn = {
   guide_8: 'Provides string escape and unescape functions for special characters',
   remove_slash: 'Remove Slashes',
   escape_string: 'Escape String',
-  unescape_string: 'Unescape String'
+  unescape_string: 'Unescape String',
+  untitled: 'Untitled',
+  path_not_found: "Path '{path}' does not exist",
+  query_error: 'Query error: {message}',
+  json_parse_error_prefix: 'JSON parse error',
+  error_position: ' (near line {line}, column {column})',
+  lenient_parsed: '✓ Parsed in lenient mode (non-standard JSON input)',
+  no_change: 'No content detected that needs processing',
+  large_json_text_mode: 'JSON is large; switched to plain text display'
 };
 
 export default jsonFormatterEn; 
